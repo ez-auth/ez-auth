@@ -7,7 +7,7 @@ export const twilioSendSMS = async (params: SendSMSParams) => {
   }
 
   const response = await fetch(
-    "https://api.twilio.com/2010-04-01/Accounts/ACdfe7f602aa15a5bfbb60f052eb56208e/Messages.json",
+    `https://api.twilio.com/2010-04-01/Accounts/${config.TWILIO_ACCOUNT_SID}/Messages.json`,
     {
       method: "POST",
       headers: {
