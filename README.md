@@ -26,7 +26,15 @@ EzAuth is an open-source authentication server using [hono](https://hono.dev/)
 
 Ensure you have an **PostgreSQL** database running and update the `.env` file with the database connection details
 
-Run migration files
+or you can just run the `docker-compose up` command to run a local database
+
+```bash
+docker-compose up -d
+```
+
+> Note: Remember to update the database connection details in the `.env` file
+
+Then, run migrations
 
 ```bash
 bun run prisma:migrate-save
