@@ -1,0 +1,25 @@
+export enum ApiCode {
+  Success = "Success",
+
+  InternalError = "InternalError",
+  NotFound = "NotFound",
+  BadRequest = "BadRequest",
+  Unauthorized = "Unauthorized",
+  Forbidden = "Forbidden",
+
+  EmailExists = "EmailExists",
+  PhoneExists = "PhoneExists",
+  UserNotFound = "UserNotFound",
+  InvalidCredentials = "InvalidCredentials",
+  UserNotVerified = "UserNotVerified",
+  InvalidConfirmationToken = "InvalidConfirmationToken",
+  BannedUser = "BannedUser",
+  WrongPassword = "WrongPassword",
+  InvalidOTP = "InvalidOTP",
+  InvalidMFA = "InvalidMFA",
+  InvalidRefreshToken = "InvalidRefreshToken",
+  InvalidSession = "InvalidSession",
+  UserBanned = "UserBanned",
+  PasswordRecoveryRateLimited = "PasswordRecoveryRateLimited",
+  PasswordSame = "PasswordSame",
+}

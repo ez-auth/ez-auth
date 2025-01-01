@@ -1,0 +1,150 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator json {
+  provider  = "prisma-json-types-generator"
+  namespace = "PrismaJson"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String  @id @default(cuid())
+  email    String? @unique
+  phone    String? @unique
+  password String?
+
+  metadata Json?
+
+  isAnonymous Boolean @default(false)
+
+  bannedAt     DateTime?
+  bannedUntil  DateTime?
+  bannedReason String?
+
+  sessions      Session[]
+  identities    Identity[]
+  verifications Verification[]
+  mfaSettings   MFASettings?
+  mfaTokens     MFAToken[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index(fields: [email])
+  @@index(fields: [phone])
+}
+
+model Identity {
+  id         String @id @default(cuid())
+  provider   String
+  providerId String
+  data       Json?
+  userId     String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index(fields: [provider, providerId])
+}
+
+model Session {
+  id           String @id @default(cuid())
+  userId       String
+  refreshToken String @unique
+
+  deviceId  String?
+  ipAddress String?
+  userAgent String?
+
+  lastUsedAt DateTime?
+  expiresAt  DateTime?
+  revokedAt  DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index(fields: [userId])
+  @@index(fields: [userId, refreshToken])
+}
+
+enum VerificationType {
+  Email
+  Phone
+  PasswordRecovery
+  PasswordChange
+  EmailChange
+  PhoneChange
+}
+
+model Verification {
+  id     String           @id @default(cuid())
+  token  String
+  type   VerificationType
+  userId String
+
+  sentAt      DateTime  @default(now())
+  confirmedAt DateTime?
+
+  /// VerificationData
+  data Json?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token, type])
+  @@index([userId])
+}
+
+enum MFAProvider {
+  TOTP
+  Email
+  SMS
+}
+
+model MFASettings {
+  id     String @id @default(cuid())
+  userId String
+
+  enabledTOTP Boolean @default(false)
+  totpSecret  String?
+
+  enabledEmail Boolean @default(false)
+
+  enabledSMS Boolean @default(false)
+
+  hashedBackupKey String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId])
+}
+
+model MFAToken {
+  id     String @id @default(cuid())
+  userId String
+
+  provider    String
+  token       String
+  confirmedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, provider])
+}
