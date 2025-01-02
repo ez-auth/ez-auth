@@ -67,8 +67,12 @@ export class SignUpWithCredentialsUsecase {
             sentAt: new Date(),
           },
         },
+        // Create MFA settings based on the credentials type
         mfaSettings: {
-          create: {},
+          create: {
+            enabledEmail: request.credentialsType === CredentialsType.Email,
+            enabledSMS: request.credentialsType === CredentialsType.Phone,
+          },
         },
       },
     });

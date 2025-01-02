@@ -57,7 +57,6 @@ export class HandleOAuthUsecase {
       });
     }
     // No user => case sign-up
-
     const newUser = await prisma.user.create({
       data: {
         email: request.providerEmail,
@@ -66,6 +65,13 @@ export class HandleOAuthUsecase {
             provider: request.provider,
             providerId: request.providerId,
             data: request.providerData,
+          },
+        },
+        mfaSettings: {
+          create: {
+            enabledEmail: false,
+            enabledSMS: false,
+            enabledTOTP: false,
           },
         },
       },

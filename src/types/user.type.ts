@@ -1,6 +1,9 @@
-import type { User as PrismaUser } from "@prisma/client";
+import type { Identity, MFASettings, User as PrismaUser } from "@prisma/client";
 
-export type UserWithoutPassword = Omit<PrismaUser, "password">;
+export type UserWithoutPassword = Omit<PrismaUser, "password"> & {
+  mfaSettings: MFASettings | null;
+  identities: Identity[];
+};
 
 export enum IdentityProvider {
   Google = "Google",
@@ -10,4 +13,10 @@ export enum IdentityProvider {
 export enum CredentialsType {
   Email = "Email",
   Phone = "Phone",
+}
+
+export enum SendVerificationType {
+  Email = "Email",
+  SMS = "SMS",
+  TOTP = "TOTP",
 }

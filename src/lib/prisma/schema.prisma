@@ -80,7 +80,6 @@ enum VerificationType {
   Email
   Phone
   PasswordRecovery
-  PasswordChange
   EmailChange
   PhoneChange
 }
