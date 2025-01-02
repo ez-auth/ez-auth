@@ -29,7 +29,13 @@ export const jwtAuth = createMiddleware<{ Variables: VariablesType }>(async (c, 
   // Get user from database - only if session is valid
   const user = await prisma.user.findUnique({
     include: {
-      mfaSettings: true,
+      mfaSettings: {
+        select: {
+          enabledEmail: true,
+          enabledSMS: true,
+          enabledTOTP: true,
+        },
+      },
       identities: true,
     },
     where: {

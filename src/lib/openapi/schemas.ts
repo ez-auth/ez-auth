@@ -42,3 +42,8 @@ export const sessionSchema = z.object({
 });
 
 export const listSessionSchema = z.array(sessionSchema);
+
+export const updateMFASettingsResponseSchema = z.object({
+  totpSecret: z.string().optional(),
+  backupKey: z.string().optional(),
+});

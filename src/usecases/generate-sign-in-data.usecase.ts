@@ -20,7 +20,7 @@ interface GenerateSignInDataResponse {
 export class GenerateSignInDataUsecase {
   async execute(request: GenerateSignInDataRequest): Promise<GenerateSignInDataResponse> {
     // Create new session
-    const refreshToken = await Bun.randomUUIDv7("base64");
+    const refreshToken = await Bun.randomUUIDv7("base64url");
     const session = await prisma.session.create({
       data: {
         userId: request.userId,

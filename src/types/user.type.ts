@@ -1,7 +1,7 @@
 import type { Identity, MFASettings, User as PrismaUser } from "@prisma/client";
 
 export type AuthUser = PrismaUser & {
-  mfaSettings: MFASettings | null;
+  mfaSettings: Pick<MFASettings, "enabledTOTP" | "enabledEmail" | "enabledSMS"> | null;
   identities: Identity[];
 };
 

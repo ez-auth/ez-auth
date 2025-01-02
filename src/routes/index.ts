@@ -6,6 +6,7 @@ import { serveStatic } from "hono/bun";
 
 import { config } from "@/config/config";
 import { changePasswordRoute } from "./change-password.route";
+import { mfaSettingsRoute } from "./mfa.route";
 import { oauthGithubRoute } from "./oauth-github.route";
 import { oauthGoogleRoute } from "./oauth-google.route";
 import { passwordRecoveryRoute } from "./password-recovery.route";
@@ -61,6 +62,7 @@ export const applyRoutes = (app: Hono) => {
   app.route("/sessions", sessionRoute);
   app.route("/password-recovery", passwordRecoveryRoute);
   app.route("/change-password", changePasswordRoute);
+  app.route("/mfa", mfaSettingsRoute);
 
   if (config.GITHUB_ENABLED) {
     app.route("/oauth/github", oauthGithubRoute);

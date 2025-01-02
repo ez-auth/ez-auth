@@ -23,7 +23,7 @@ export const appErrorHandler = (error: Error | HTTPResponseError, c: Context) =>
       c,
       {
         code: httpStatusToApiCode(error.status),
-        error: error.getResponse() || error.message,
+        error: error.message,
       },
       error.status || 500,
     );
