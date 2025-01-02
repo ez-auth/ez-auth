@@ -1,4 +1,5 @@
 import { HTTPException } from "hono/http-exception";
+
 import { prisma } from "@/lib/prisma";
 import { AuthUser } from "@/types/user.type";
 import { MFASettings, UpdateInput } from "@prisma/client";

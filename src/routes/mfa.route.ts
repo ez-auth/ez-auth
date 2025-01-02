@@ -5,8 +5,8 @@ import { z } from "zod";
 import { apiResponse } from "@/lib/api-utils/api-response";
 import { jwtAuth } from "@/lib/middlewares/jwt.middleware";
 import { baseDescribeRoute } from "@/lib/openapi";
-import { updateMFASettingsUsecase } from "@/usecases";
 import { updateMFASettingsResponseSchema } from "@/lib/openapi/schemas";
+import { updateMFASettingsUsecase } from "@/usecases";
 
 const route = new Hono();
 
