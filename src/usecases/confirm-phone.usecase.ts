@@ -12,14 +12,22 @@ interface ConfirmPhoneRequest {
 
 export class ConfirmPhoneUsecase {
   async execute(request: ConfirmPhoneRequest) {
+    // Get user with phone
+    const user = await prisma.user.findUnique({
+      where: {
+        phone: request.phone,
+      },
+    });
+    if (!user) {
+      throw new UsecaseError(ApiCode.UserNotFound);
+    }
+
     // Check if the token is valid
     const verification = await prisma.verification.findFirst({
       where: {
         token: request.token,
         type: "Phone",
-        user: {
-          phone: request.phone,
-        },
+        userId: user.id,
       },
       orderBy: {
         sentAt: "desc",

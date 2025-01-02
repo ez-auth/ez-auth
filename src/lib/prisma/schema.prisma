@@ -101,8 +101,7 @@ model Verification {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([token, type])
-  @@index([userId])
+  @@index([token, type, userId])
 }
 
 enum MFAProvider {
@@ -132,18 +131,23 @@ model MFASettings {
   @@unique([userId])
 }
 
+enum MFATokenType {
+  ChangePassword
+}
+
 model MFAToken {
   id     String @id @default(cuid())
   userId String
 
-  provider    String
-  token       String
+  type        MFATokenType
+  provider    MFAProvider
+  token       String?
   confirmedAt DateTime?
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId, provider])
+  @@index([userId, type, provider])
 }

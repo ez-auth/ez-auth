@@ -1,14 +1,17 @@
+import { ChangePasswordUsecase } from "./change-password.usecase";
 import { ConfirmEmailUsecase } from "./confirm-email.usecase";
 import { ConfirmPhoneUsecase } from "./confirm-phone.usecase";
 import { GenerateSignInDataUsecase } from "./generate-sign-in-data.usecase";
 import { GetListSessionUsecase } from "./get-list-session.usecase";
 import { HandleOAuthUsecase } from "./handle-oauth.usecase";
 import { RefreshTokenUsecase } from "./refresh-token.usecase";
+import { RequestChangePasswordUsecase } from "./request-change-password.usecase";
 import { RequestPasswordRecoveryUsecase } from "./request-password-recovery.usecase";
 import { ResetPasswordUsecase } from "./reset-password.usecase";
 import { RevokeSessionUsecase } from "./revoke-session.usecase";
 import { SignInWithCredentialsUsecase } from "./sign-in-with-credentials.usecase";
 import { SignUpWithCredentialsUsecase } from "./sign-up-with-credentials.usecase";
+import { VerifyTotpUsecase } from "./verify-totp.usecase";
 
 export const confirmEmailUsecase = new ConfirmEmailUsecase();
 export const generateSignInDataUsecase = new GenerateSignInDataUsecase();
@@ -21,3 +24,6 @@ export const signUpWithCredentialsUsecase = new SignUpWithCredentialsUsecase();
 export const requestPasswordRecoveryUsecase = new RequestPasswordRecoveryUsecase();
 export const resetPasswordUsecase = new ResetPasswordUsecase();
 export const confirmPhoneUsecase = new ConfirmPhoneUsecase();
+export const requestChangePasswordUsecase = new RequestChangePasswordUsecase();
+export const verifyTotpUsecase = new VerifyTotpUsecase();
+export const changePasswordUsecase = new ChangePasswordUsecase();

@@ -49,13 +49,15 @@ const envSchema = z.object({
   // Password
   PASSWORD_MIN_LENGTH: z.coerce.number().default(8),
   PASSWORD_MAX_LENGTH: z.coerce.number().default(32),
+  CHANGE_PASSWORD_REQUIRES_MFA: z.coerce.boolean().default(false),
 
   // Session
   SESSION_EXPIRY: z.coerce.number().default(60 * 60 * 24 * 30),
 
   // Verification
-  VERIFICATION_EXPIRY: z.coerce.number().default(60 * 60 * 24),
+  VERIFICATION_EXPIRY: z.coerce.number().default(60 * 60),
   VERIFICATION_RESEND_DELAY: z.coerce.number().default(60 * 3),
+  VERIFICATION_CODE_LENGTH: z.coerce.number().default(6),
 
   // MFA
   MFA_EXPIRY: z.coerce.number().default(60 * 5),

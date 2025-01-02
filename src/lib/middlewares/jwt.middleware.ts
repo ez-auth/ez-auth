@@ -39,6 +39,8 @@ export const jwtAuth = createMiddleware<{ Variables: VariablesType }>(async (c, 
       bannedReason: true,
       createdAt: true,
       updatedAt: true,
+      mfaSettings: true,
+      identities: true,
     },
     where: {
       id: jwtPayload.sub,

@@ -15,16 +15,23 @@ interface ResetPasswordRequest {
 
 export class ResetPasswordUsecase {
   async execute(request: ResetPasswordRequest): Promise<void> {
+    // Check if the user already exists
+    const user = await prisma.user.findUnique({
+      where: {
+        email: request.credentialsType === CredentialsType.Email ? request.identifier : undefined,
+        phone: request.credentialsType === CredentialsType.Phone ? request.identifier : undefined,
+      },
+    });
+    if (!user) {
+      throw new UsecaseError(ApiCode.UserNotFound);
+    }
+
     // Find verification record
     const verification = await prisma.verification.findFirst({
       where: {
         token: request.token,
         type: "PasswordRecovery",
-        confirmedAt: null,
-        user: {
-          email: request.credentialsType === CredentialsType.Email ? request.identifier : undefined,
-          phone: request.credentialsType === CredentialsType.Phone ? request.identifier : undefined,
-        },
+        userId: user.id,
       },
       orderBy: {
         sentAt: "desc",
@@ -41,6 +48,7 @@ export class ResetPasswordUsecase {
     // Check if the token is valid
     if (
       !verification ||
+      !!verification.confirmedAt ||
       dayjs(verification.sentAt).add(config.VERIFICATION_EXPIRY, "second").isBefore(dayjs())
     ) {
       throw new UsecaseError(ApiCode.InvalidConfirmationToken);

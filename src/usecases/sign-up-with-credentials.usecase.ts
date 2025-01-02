@@ -1,3 +1,5 @@
+import { URLSearchParams } from "node:url";
+
 import { config } from "@/config/config";
 import { SIGN_UP_CONFIRMATION_EMAIL_TEMPLATE_PATH } from "@/consts/html-email-template.const";
 import { SIGN_UP_CONFIRMATION_SMS_TEMPLATE } from "@/consts/sms-template.const";
@@ -39,7 +41,7 @@ export class SignUpWithCredentialsUsecase {
         subject: "Confirm your email address",
         html: htmlTemplate.replaceAll(
           "{{ .ConfirmationLink }}",
-          `${config.API_URL}/api/confirm-email-sign-up?token=${token}&email=${request.identifier}`,
+          `${config.API_URL}/api/confirm-email-sign-up?${new URLSearchParams({ token, email: request.identifier }).toString()}`,
         ),
       });
     } else if (request.credentialsType === CredentialsType.Phone) {
@@ -72,6 +74,7 @@ export class SignUpWithCredentialsUsecase {
           create: {
             enabledEmail: request.credentialsType === CredentialsType.Email,
             enabledSMS: request.credentialsType === CredentialsType.Phone,
+            enabledTOTP: false,
           },
         },
       },
