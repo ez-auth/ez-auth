@@ -13,8 +13,8 @@ const route = new Hono();
 route.post(
   "/revoke",
   baseDescribeRoute("Revoke session"),
-  validator("json", z.object({ sessionId: z.string() })),
   jwtAuth,
+  validator("json", z.object({ sessionId: z.string() })),
   async (c) => {
     await revokeSessionUsecase.execute(c.get("user"), {
       sessionId: c.req.valid("json").sessionId,
@@ -27,6 +27,7 @@ route.post(
 route.get(
   "/",
   baseDescribeRoute("Get list of sessions", listSessionSchema),
+  jwtAuth,
   validator(
     "query",
     z.object({
@@ -36,7 +37,6 @@ route.get(
         .optional(),
     }),
   ),
-  jwtAuth,
   async (c) => {
     const sessions = await getListSessionUsecase.execute(c.get("user"), {
       revoked: c.req.valid("query").revoked,

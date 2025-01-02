@@ -13,8 +13,6 @@ export enum ApiCode {
   InvalidCredentials = "InvalidCredentials",
   UserNotVerified = "UserNotVerified",
   InvalidConfirmationToken = "InvalidConfirmationToken",
-  BannedUser = "BannedUser",
-  WrongPassword = "WrongPassword",
   InvalidOTP = "InvalidOTP",
   InvalidMFA = "InvalidMFA",
   InvalidRefreshToken = "InvalidRefreshToken",

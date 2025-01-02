@@ -31,15 +31,8 @@ export class SignInWithCredentialsUsecase {
         email: request.credentialsType === CredentialsType.Email ? request.identifier : undefined,
         phone: request.credentialsType === CredentialsType.Phone ? request.identifier : undefined,
       },
-      include: {
-        verifications: {
-          select: {
-            type: true,
-            confirmedAt: true,
-          },
-        },
-      },
     });
+
     if (!user || !user.password) {
       throw new UsecaseError(ApiCode.InvalidCredentials);
     }
@@ -51,16 +44,29 @@ export class SignInWithCredentialsUsecase {
     }
 
     // Check user is confirmed
-    const isVerified = user.verifications.find(
-      (v) => v.type === request.credentialsType && !!v.confirmedAt,
-    );
+    let isVerified = false;
+    switch (request.credentialsType) {
+      case CredentialsType.Email:
+        isVerified = user.isVerifiedEmail;
+        break;
+      case CredentialsType.Phone:
+        isVerified = user.isVerifiedPhone;
+        break;
+    }
     if (!isVerified) {
       throw new UsecaseError(ApiCode.UserNotVerified);
     }
 
     // Check if the user is banned
     if (dayjs(user.bannedUntil).isAfter(dayjs())) {
-      throw new UsecaseError(ApiCode.BannedUser);
+      throw new UsecaseError(
+        ApiCode.UserBanned,
+        JSON.stringify({
+          bannedAt: user.bannedAt,
+          bannedUntil: user.bannedUntil,
+          bannedReason: user.bannedReason,
+        }),
+      );
     }
 
     return this.generateSignInDataUsecase.execute({

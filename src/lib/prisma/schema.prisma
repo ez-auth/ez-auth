@@ -26,6 +26,9 @@ model User {
   bannedUntil  DateTime?
   bannedReason String?
 
+  isVerifiedEmail Boolean @default(false)
+  isVerifiedPhone Boolean @default(false)
+
   sessions      Session[]
   identities    Identity[]
   verifications Verification[]
@@ -93,7 +96,7 @@ model Verification {
   sentAt      DateTime  @default(now())
   confirmedAt DateTime?
 
-  /// VerificationData
+  /// [VerificationData]
   data Json?
 
   createdAt DateTime @default(now())

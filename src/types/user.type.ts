@@ -1,6 +1,6 @@
 import type { Identity, MFASettings, User as PrismaUser } from "@prisma/client";
 
-export type UserWithoutPassword = Omit<PrismaUser, "password"> & {
+export type AuthUser = PrismaUser & {
   mfaSettings: MFASettings | null;
   identities: Identity[];
 };

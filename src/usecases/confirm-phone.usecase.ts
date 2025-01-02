@@ -50,6 +50,11 @@ export class ConfirmPhoneUsecase {
       },
       data: {
         confirmedAt: new Date(),
+        user: {
+          update: {
+            isVerifiedPhone: true,
+          },
+        },
       },
     });
   }

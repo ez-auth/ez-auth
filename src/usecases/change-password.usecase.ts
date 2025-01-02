@@ -3,7 +3,7 @@ import { MFAProvider } from "@prisma/client";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { prisma } from "@/lib/prisma";
-import { UserWithoutPassword } from "@/types/user.type";
+import { AuthUser } from "@/types/user.type";
 import { verifyTotpUsecase } from ".";
 
 interface ChangePasswordRequest {
@@ -13,7 +13,7 @@ interface ChangePasswordRequest {
 }
 
 export class ChangePasswordUsecase {
-  async execute(user: UserWithoutPassword, request: ChangePasswordRequest): Promise<void> {
+  async execute(user: AuthUser, request: ChangePasswordRequest): Promise<void> {
     // Verify MFA
     if (request.mfaProvider === MFAProvider.TOTP && request.token) {
       const isVerified = await verifyTotpUsecase.execute({

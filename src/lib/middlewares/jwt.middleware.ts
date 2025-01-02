@@ -6,10 +6,10 @@ import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { verifyAccessToken } from "@/lib/jwt";
 import { prisma } from "@/lib/prisma";
-import type { UserWithoutPassword } from "@/types/user.type";
+import { AuthUser } from "@/types/user.type";
 
 type VariablesType = {
-  user: UserWithoutPassword;
+  user: AuthUser;
   sessionId: string;
 };
 
@@ -28,17 +28,7 @@ export const jwtAuth = createMiddleware<{ Variables: VariablesType }>(async (c, 
 
   // Get user from database - only if session is valid
   const user = await prisma.user.findUnique({
-    select: {
-      id: true,
-      email: true,
-      phone: true,
-      metadata: true,
-      isAnonymous: true,
-      bannedAt: true,
-      bannedUntil: true,
-      bannedReason: true,
-      createdAt: true,
-      updatedAt: true,
+    include: {
       mfaSettings: true,
       identities: true,
     },

@@ -6,7 +6,7 @@ import { CHANGE_PASSWORD_EMAIL_TEMPLATE_PATH } from "@/consts/html-email-templat
 import { sendEmail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
 import { sendSMS } from "@/lib/sms";
-import { UserWithoutPassword } from "@/types/user.type";
+import { AuthUser } from "@/types/user.type";
 import { generateNumericCode } from "@/utils";
 
 interface RequestChangePasswordRequest {
@@ -14,7 +14,7 @@ interface RequestChangePasswordRequest {
 }
 
 export class RequestChangePasswordUsecase {
-  async execute(user: UserWithoutPassword, request: RequestChangePasswordRequest): Promise<void> {
+  async execute(user: AuthUser, request: RequestChangePasswordRequest): Promise<void> {
     if (config.CHANGE_PASSWORD_REQUIRES_MFA && !request.mfaProvider) {
       throw new HTTPException(400, { message: "MFA provider is required" });
     }
@@ -60,7 +60,7 @@ export class RequestChangePasswordUsecase {
     }
   }
 
-  private validateMFARequest(user: UserWithoutPassword, mfaProvider: MFAProvider) {
+  private validateMFARequest(user: AuthUser, mfaProvider: MFAProvider) {
     if (!user.mfaSettings) {
       throw new HTTPException(400, { message: "User don't have MFA" });
     }

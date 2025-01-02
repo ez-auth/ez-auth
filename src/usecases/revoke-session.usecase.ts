@@ -1,14 +1,14 @@
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { prisma } from "@/lib/prisma";
-import type { UserWithoutPassword } from "@/types/user.type";
+import type { AuthUser } from "@/types/user.type";
 
 interface RevokeSessionRequest {
   sessionId: string;
 }
 
 export class RevokeSessionUsecase {
-  async execute(user: UserWithoutPassword, request: RevokeSessionRequest): Promise<void> {
+  async execute(user: AuthUser, request: RevokeSessionRequest): Promise<void> {
     // Find the session to revoke
     const session = await prisma.session.findUnique({
       where: {

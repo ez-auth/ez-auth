@@ -13,13 +13,13 @@ const router = new Hono();
 router.post(
   "/request",
   baseDescribeRoute("Request change password"),
+  jwtAuth,
   validator(
     "json",
     z.object({
       mfaProvider: z.nativeEnum(MFAProvider).optional(),
     }),
   ),
-  jwtAuth,
   async (c) => {
     await requestChangePasswordUsecase.execute(c.get("user"), c.req.valid("json"));
 
@@ -30,6 +30,7 @@ router.post(
 router.post(
   "/",
   baseDescribeRoute("Change password"),
+  jwtAuth,
   validator(
     "json",
     z.object({
@@ -38,7 +39,6 @@ router.post(
       newPassword: z.string().min(8),
     }),
   ),
-  jwtAuth,
   async (c) => {
     await changePasswordUsecase.execute(c.get("user"), c.req.valid("json"));
 
