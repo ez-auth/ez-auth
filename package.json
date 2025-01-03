@@ -1,7 +1,7 @@
 {
   "name": "ez-auth",
   "scripts": {
-    "dev": "bun run --hot src/index.ts | pino-pretty",
+    "dev": "bun run --hot src/index.ts",
     "build": "rm -rf dist && bun build src/index.ts --target bun --outdir ./dist --minify",
     "start": "bun run dist/index.js",
     "check": "biome check --organize-imports-enabled=true --write ./src",

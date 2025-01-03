@@ -1,6 +1,7 @@
 import { ChangePasswordUsecase } from "./change-password.usecase";
 import { ConfirmEmailUsecase } from "./confirm-email.usecase";
 import { ConfirmPhoneUsecase } from "./confirm-phone.usecase";
+import { GenerateRefreshTokenUsecase } from "./generate-refresh-token.usecase";
 import { GenerateSignInDataUsecase } from "./generate-sign-in-data.usecase";
 import { GetListSessionUsecase } from "./get-list-session.usecase";
 import { HandleOAuthUsecase } from "./handle-oauth.usecase";
@@ -31,3 +32,4 @@ export const verifyTotpUsecase = new VerifyTotpUsecase();
 export const changePasswordUsecase = new ChangePasswordUsecase();
 export const updateMFASettingsUsecase = new UpdateMFASettingsUsecase();
 export const verifyMFATokenUsecase = new VerifyMFATokenUsecase();
+export const generateRefreshTokenUsecase = new GenerateRefreshTokenUsecase();

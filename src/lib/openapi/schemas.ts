@@ -26,6 +26,7 @@ export const generateSignInDataResponseSchema = z.object({
 
 export const refreshTokenResponseSchema = z.object({
   accessToken: z.string(),
+  refreshToken: z.string(),
 });
 
 export const sessionSchema = z.object({

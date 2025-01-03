@@ -4,6 +4,7 @@ import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { generateAccessToken } from "@/lib/jwt";
 import { prisma } from "@/lib/prisma";
+import { generateRefreshTokenUsecase } from ".";
 
 interface RefreshTokenRequest {
   refreshToken: string;
@@ -14,6 +15,7 @@ interface RefreshTokenRequest {
 
 interface RefreshTokenResponse {
   accessToken: string;
+  refreshToken: string;
 }
 
 export class RefreshTokenUsecase {
@@ -40,12 +42,16 @@ export class RefreshTokenUsecase {
       sessionId: session.id,
     });
 
+    // Generate new refresh token
+    const refreshToken = await generateRefreshTokenUsecase.execute();
+
     // Update session
     await prisma.session.update({
       where: {
         id: session.id,
       },
       data: {
+        refreshToken,
         lastUsedAt: new Date(),
         ipAddress: request.ipAddress,
         userAgent: request.userAgent,
@@ -55,6 +61,7 @@ export class RefreshTokenUsecase {
 
     return {
       accessToken,
+      refreshToken,
     };
   }
 }

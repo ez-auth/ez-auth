@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import { config } from "@/config/config";
 import { generateAccessToken } from "@/lib/jwt";
 import { prisma } from "@/lib/prisma";
+import { generateRefreshTokenUsecase } from ".";
 
 interface GenerateSignInDataRequest {
   userId: string;
@@ -20,7 +21,7 @@ interface GenerateSignInDataResponse {
 export class GenerateSignInDataUsecase {
   async execute(request: GenerateSignInDataRequest): Promise<GenerateSignInDataResponse> {
     // Create new session
-    const refreshToken = await Bun.randomUUIDv7("base64url");
+    const refreshToken = await generateRefreshTokenUsecase.execute();
     const session = await prisma.session.create({
       data: {
         userId: request.userId,
