@@ -16,7 +16,7 @@ route.put(
   jwtAuth,
   validator(
     "json",
-    z.object({
+    z.strictObject({
       enabledTOTP: z.boolean().optional(),
       enabledEmail: z.boolean().optional(),
       enabledSMS: z.boolean().optional(),

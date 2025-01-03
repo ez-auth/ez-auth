@@ -17,6 +17,7 @@ export class VerifyTotpUsecase {
     if (!mfaSettings || !mfaSettings.enabledTOTP || !mfaSettings.totpSecret) {
       throw new HTTPException(400, { message: "Invalid MFA settings" });
     }
+
     const totp = new OTPAuth.TOTP({
       digits: 6,
       secret: mfaSettings.totpSecret,

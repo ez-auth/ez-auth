@@ -2,6 +2,7 @@ import { HTTPException } from "hono/http-exception";
 
 import { prisma } from "@/lib/prisma";
 import { AuthUser } from "@/types/user.type";
+import { generateRandomBase32String } from "@/utils";
 import { MFASettings, UpdateInput } from "@prisma/client";
 
 export interface UpdateMFASettingsRequest {
@@ -82,11 +83,11 @@ export class UpdateMFASettingsUsecase {
   }
 
   private generateSecretKey(): string {
-    return Bun.randomUUIDv7("base64url");
+    return generateRandomBase32String(16);
   }
 
   private generateBackupKey(): string {
     // Concat 2 random string
-    return `${Bun.randomUUIDv7("base64url")}-${Bun.randomUUIDv7("base64url")}`;
+    return `${Bun.randomUUIDv7()}-${Bun.randomUUIDv7()}`;
   }
 }

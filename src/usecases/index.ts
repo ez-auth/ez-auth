@@ -12,6 +12,7 @@ import { RevokeSessionUsecase } from "./revoke-session.usecase";
 import { SignInWithCredentialsUsecase } from "./sign-in-with-credentials.usecase";
 import { SignUpWithCredentialsUsecase } from "./sign-up-with-credentials.usecase";
 import { UpdateMFASettingsUsecase } from "./update-mfa-settings.usecase";
+import { VerifyMFATokenUsecase } from "./verify-mfa-token.usecase";
 import { VerifyTotpUsecase } from "./verify-totp.usecase";
 
 export const confirmEmailUsecase = new ConfirmEmailUsecase();
@@ -29,3 +30,4 @@ export const requestChangePasswordUsecase = new RequestChangePasswordUsecase();
 export const verifyTotpUsecase = new VerifyTotpUsecase();
 export const changePasswordUsecase = new ChangePasswordUsecase();
 export const updateMFASettingsUsecase = new UpdateMFASettingsUsecase();
+export const verifyMFATokenUsecase = new VerifyMFATokenUsecase();

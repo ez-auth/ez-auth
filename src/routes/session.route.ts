@@ -14,7 +14,7 @@ route.post(
   "/revoke",
   baseDescribeRoute("Revoke session"),
   jwtAuth,
-  validator("json", z.object({ sessionId: z.string() })),
+  validator("json", z.strictObject({ sessionId: z.string() })),
   async (c) => {
     await revokeSessionUsecase.execute(c.get("user"), {
       sessionId: c.req.valid("json").sessionId,
@@ -30,7 +30,7 @@ route.get(
   jwtAuth,
   validator(
     "query",
-    z.object({
+    z.strictObject({
       revoked: z
         .enum(["true", "false"])
         .transform((value) => value === "true")

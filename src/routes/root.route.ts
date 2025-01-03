@@ -25,7 +25,9 @@ import {
 const route = new Hono();
 
 route.get("/me", baseDescribeRoute("Get current user", userSchema), jwtAuth, async (c) => {
-  return apiResponse(c, { data: c.get("user") });
+  const user = c.get("user");
+  const { password, ...userWithoutPassword } = user;
+  return apiResponse(c, { data: userWithoutPassword });
 });
 
 route.post(
@@ -33,7 +35,7 @@ route.post(
   baseDescribeRoute("Sign up with credentials"),
   validator(
     "json",
-    z.object({
+    z.strictObject({
       credentialsType: z.nativeEnum(CredentialsType).default(CredentialsType.Email),
       identifier: z.string(),
       password: z.string(),
@@ -52,7 +54,7 @@ route.post(
   baseDescribeRoute("Sign in with credentials", signInWithCredentialsResponseSchema),
   validator(
     "json",
-    z.object({
+    z.strictObject({
       credentialsType: z.nativeEnum(CredentialsType),
       identifier: z.string(),
       password: z.string(),
@@ -74,7 +76,7 @@ route.post(
 route.get(
   "/confirm-email-sign-up",
   baseDescribeRoute("Confirm email sign up", signInWithCredentialsResponseSchema),
-  validator("query", z.object({ token: z.string(), email: z.string() })),
+  validator("query", z.strictObject({ token: z.string(), email: z.string() })),
   async (c) => {
     await confirmEmailUsecase.execute({
       token: c.req.valid("query").token,
@@ -88,7 +90,7 @@ route.get(
 route.get(
   "/confirm-phone-sign-up",
   baseDescribeRoute("Confirm phone sign up", signInWithCredentialsResponseSchema),
-  validator("query", z.object({ token: z.string(), phone: z.string() })),
+  validator("query", z.strictObject({ token: z.string(), phone: z.string() })),
   async (c) => {
     await confirmPhoneUsecase.execute({
       token: c.req.valid("query").token,
@@ -102,7 +104,7 @@ route.get(
 route.post(
   "/refresh-token",
   baseDescribeRoute("Refresh token", refreshTokenResponseSchema),
-  validator("json", z.object({ refreshToken: z.string() })),
+  validator("json", z.strictObject({ refreshToken: z.string() })),
   async (c) => {
     const response = await refreshTokenUsecase.execute({
       refreshToken: c.req.valid("json").refreshToken,

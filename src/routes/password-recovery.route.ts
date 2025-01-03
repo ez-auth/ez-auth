@@ -14,7 +14,7 @@ router.post(
   baseDescribeRoute("Request password recovery"),
   validator(
     "json",
-    z.object({
+    z.strictObject({
       credentialsType: z.nativeEnum(CredentialsType),
       identifier: z.string(),
     }),
@@ -31,7 +31,7 @@ router.post(
   baseDescribeRoute("Reset password"),
   validator(
     "json",
-    z.object({
+    z.strictObject({
       credentialsType: z.nativeEnum(CredentialsType),
       identifier: z.string(),
       token: z.string(),

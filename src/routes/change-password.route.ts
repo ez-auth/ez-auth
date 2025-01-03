@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { apiResponse } from "@/lib/api-utils/api-response";
 import { jwtAuth } from "@/lib/middlewares/jwt.middleware";
+import { verifyMFA } from "@/lib/middlewares/mfa.middleware";
 import { baseDescribeRoute } from "@/lib/openapi";
 import { changePasswordUsecase, requestChangePasswordUsecase } from "@/usecases";
 
@@ -16,7 +17,7 @@ router.post(
   jwtAuth,
   validator(
     "json",
-    z.object({
+    z.strictObject({
       mfaProvider: z.nativeEnum(MFAProvider).optional(),
     }),
   ),
@@ -31,11 +32,10 @@ router.post(
   "/",
   baseDescribeRoute("Change password"),
   jwtAuth,
+  ...verifyMFA(true, "ChangePassword"),
   validator(
     "json",
-    z.object({
-      mfaProvider: z.nativeEnum(MFAProvider).optional(),
-      token: z.string().optional(),
+    z.strictObject({
       newPassword: z.string().min(8),
     }),
   ),
