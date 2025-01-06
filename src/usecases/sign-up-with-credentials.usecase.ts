@@ -2,19 +2,19 @@ import { URLSearchParams } from "node:url";
 
 import { config } from "@/config/config";
 import { SIGN_UP_CONFIRMATION_EMAIL_TEMPLATE_PATH } from "@/consts/html-email-template.const";
-import { SIGN_UP_CONFIRMATION_SMS_TEMPLATE } from "@/consts/sms-template.const";
+import { SIGN_UP_CONFIRMATION_SMS_TEMPLATE_PATH } from "@/consts/sms-template.const";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
-import { sendEmail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
-import { sendSMS } from "@/lib/sms";
 import { CredentialsType } from "@/types/user.type";
 import { generateNumericCode } from "@/utils";
+import { sendVerificationUsecase } from ".";
 
 interface SignUpWithCredentialsRequest {
   credentialsType: CredentialsType;
   identifier: string;
   password: string;
+  redirectUrl?: string;
   metadata?: any;
 }
 
@@ -30,31 +30,8 @@ export class SignUpWithCredentialsUsecase {
       throw new UsecaseError(ApiCode.EmailExists);
     }
 
-    // Create confirmation token
-    const token = this.generateToken(request.credentialsType);
-
-    if (request.credentialsType === CredentialsType.Email) {
-      // Send verification email
-      const htmlTemplate = await Bun.file(SIGN_UP_CONFIRMATION_EMAIL_TEMPLATE_PATH).text();
-      await sendEmail({
-        to: request.identifier,
-        subject: "Confirm your email address",
-        html: htmlTemplate.replaceAll(
-          "{{ .ConfirmationLink }}",
-          `${config.API_URL}/api/confirm-email-sign-up?${new URLSearchParams({ token, email: request.identifier }).toString()}`,
-        ),
-      });
-    } else if (request.credentialsType === CredentialsType.Phone) {
-      // Send verification SMS
-      await sendSMS({
-        to: request.identifier,
-        body: SIGN_UP_CONFIRMATION_SMS_TEMPLATE(token),
-      });
-    }
-
     // Hash password
     const hashedPassword = await Bun.password.hash(request.password);
-
     // Create user
     await prisma.user.create({
       data: {
@@ -62,13 +39,6 @@ export class SignUpWithCredentialsUsecase {
         phone: request.credentialsType === CredentialsType.Phone ? request.identifier : undefined,
         metadata: request.metadata,
         password: hashedPassword,
-        verifications: {
-          create: {
-            type: request.credentialsType,
-            token,
-            sentAt: new Date(),
-          },
-        },
         // Create MFA settings based on the credentials type
         mfaSettings: {
           create: {
@@ -79,9 +49,40 @@ export class SignUpWithCredentialsUsecase {
         },
       },
     });
+
+    // Create confirmation token
+    const token = this.generateConfirmationToken(request.credentialsType);
+
+    // Prepare subject, content to send verification
+    const subject = "Confirm your email address";
+    let content = "";
+    if (request.credentialsType === CredentialsType.Email) {
+      const template = await Bun.file(SIGN_UP_CONFIRMATION_EMAIL_TEMPLATE_PATH).text();
+      content = template.replaceAll(
+        "{{ .ConfirmationLink }}",
+        `${config.API_URL}/api/confirm-sign-up?${new URLSearchParams({
+          token,
+          type: CredentialsType.Email,
+          identifier: request.identifier,
+          redirectUrl: request.redirectUrl || "",
+        }).toString()}`,
+      );
+    } else if (request.credentialsType === CredentialsType.Phone) {
+      const template = await Bun.file(SIGN_UP_CONFIRMATION_SMS_TEMPLATE_PATH).text();
+      content = template.replaceAll("{{ .Code }}", token);
+    }
+
+    // Send verification
+    await sendVerificationUsecase.execute({
+      token,
+      type: request.credentialsType,
+      identifier: request.identifier,
+      subject,
+      content,
+    });
   }
 
-  private generateToken(credentialsType: CredentialsType) {
+  private generateConfirmationToken(credentialsType: CredentialsType) {
     switch (credentialsType) {
       case CredentialsType.Email:
         return Bun.randomUUIDv7("base64url");

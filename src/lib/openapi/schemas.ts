@@ -18,6 +18,12 @@ export const signInWithCredentialsResponseSchema = z.object({
   sessionId: z.string(),
 });
 
+export const confirmSignUpResponseSchema = z.object({
+  accessToken: z.string(),
+  refreshToken: z.string(),
+  sessionId: z.string(),
+});
+
 export const generateSignInDataResponseSchema = z.object({
   accessToken: z.string(),
   refreshToken: z.string(),

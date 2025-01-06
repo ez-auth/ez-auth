@@ -4,18 +4,24 @@ import { config } from "@/config/config";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { prisma } from "@/lib/prisma";
+import { EMAIL_BASE_TYPES, PHONE_BASE_TYPES, VerificationData } from "@/types/verification.type";
+import { VerificationType } from "@prisma/client";
 
-interface ConfirmEmailRequest {
+interface VerifyRequest {
   token: string;
-  email: string;
+  type: VerificationType;
+  identifier: string;
+  expiry?: number; // in seconds
+  data?: VerificationData;
 }
 
-export class ConfirmEmailUsecase {
-  async execute(request: ConfirmEmailRequest) {
-    // Get user with email
+export class VerifyUsecase {
+  async execute(request: VerifyRequest) {
+    // Get user with email/phone
     const user = await prisma.user.findUnique({
       where: {
-        email: request.email,
+        email: EMAIL_BASE_TYPES.includes(request.type) ? request.identifier : undefined,
+        phone: PHONE_BASE_TYPES.includes(request.type) ? request.identifier : undefined,
       },
     });
     if (!user) {
@@ -26,7 +32,7 @@ export class ConfirmEmailUsecase {
     const verification = await prisma.verification.findFirst({
       where: {
         token: request.token,
-        type: "Email",
+        type: request.type,
         userId: user.id,
       },
       orderBy: {
@@ -38,13 +44,15 @@ export class ConfirmEmailUsecase {
     if (
       !verification ||
       verification.confirmedAt ||
-      dayjs(verification.sentAt).add(config.VERIFICATION_EXPIRY, "second").isBefore(dayjs())
+      dayjs(verification.sentAt)
+        .add(request.expiry ?? config.VERIFICATION_EXPIRY, "second")
+        .isBefore(dayjs())
     ) {
       throw new UsecaseError(ApiCode.InvalidConfirmationToken);
     }
 
     // Confirm the user
-    await prisma.verification.update({
+    return prisma.verification.update({
       where: {
         id: verification.id,
       },
@@ -52,9 +60,13 @@ export class ConfirmEmailUsecase {
         confirmedAt: new Date(),
         user: {
           update: {
-            isVerifiedEmail: true,
+            isVerifiedEmail: request.type === "Email" ? true : undefined,
+            isVerifiedPhone: request.type === "Phone" ? true : undefined,
           },
         },
+      },
+      include: {
+        user: true,
       },
     });
   }

@@ -8,14 +8,14 @@ import { apiResponse } from "@/lib/api-utils/api-response";
 import { jwtAuth } from "@/lib/middlewares/jwt.middleware";
 import { baseDescribeRoute } from "@/lib/openapi";
 import {
+  confirmSignUpResponseSchema,
   refreshTokenResponseSchema,
   signInWithCredentialsResponseSchema,
   userSchema,
 } from "@/lib/openapi/schemas";
 import { CredentialsType } from "@/types/user.type";
 import {
-  confirmEmailUsecase,
-  confirmPhoneUsecase,
+  confirmSignUpUsecase,
   refreshTokenUsecase,
   revokeSessionUsecase,
   signInWithCredentialsUsecase,
@@ -39,6 +39,7 @@ route.post(
       credentialsType: z.nativeEnum(CredentialsType).default(CredentialsType.Email),
       identifier: z.string(),
       password: z.string(),
+      redirectUrl: z.string().url().optional(),
       metadata: z.any().optional(),
     }),
   ),
@@ -74,28 +75,25 @@ route.post(
 );
 
 route.get(
-  "/confirm-email-sign-up",
-  baseDescribeRoute("Confirm email sign up", signInWithCredentialsResponseSchema),
-  validator("query", z.strictObject({ token: z.string(), email: z.string() })),
+  "/confirm-sign-up",
+  baseDescribeRoute("Confirm sign up", confirmSignUpResponseSchema),
+  validator(
+    "query",
+    z.strictObject({
+      token: z.string(),
+      type: z.nativeEnum(CredentialsType),
+      identifier: z.string(),
+      redirectUrl: z.string().optional(),
+    }),
+  ),
   async (c) => {
-    await confirmEmailUsecase.execute({
-      token: c.req.valid("query").token,
-      email: c.req.valid("query").email,
-    });
+    await confirmSignUpUsecase.execute(c.req.valid("query"));
 
-    return apiResponse(c);
-  },
-);
-
-route.get(
-  "/confirm-phone-sign-up",
-  baseDescribeRoute("Confirm phone sign up", signInWithCredentialsResponseSchema),
-  validator("query", z.strictObject({ token: z.string(), phone: z.string() })),
-  async (c) => {
-    await confirmPhoneUsecase.execute({
-      token: c.req.valid("query").token,
-      phone: c.req.valid("query").phone,
-    });
+    // If redirectUrl is provided, redirect to it
+    const redirectUrl = c.req.valid("query").redirectUrl;
+    if (redirectUrl) {
+      return c.redirect(redirectUrl);
+    }
 
     return apiResponse(c);
   },

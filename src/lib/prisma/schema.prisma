@@ -82,7 +82,8 @@ model Session {
 enum VerificationType {
   Email
   Phone
-  PasswordRecovery
+  PasswordRecoveryByEmail
+  PasswordRecoveryByPhone
   EmailChange
   PhoneChange
 }

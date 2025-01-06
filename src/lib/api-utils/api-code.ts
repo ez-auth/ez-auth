@@ -18,6 +18,6 @@ export enum ApiCode {
   InvalidRefreshToken = "InvalidRefreshToken",
   InvalidSession = "InvalidSession",
   UserBanned = "UserBanned",
-  PasswordRecoveryRateLimited = "PasswordRecoveryRateLimited",
   PasswordSame = "PasswordSame",
+  SendVerificationTooOften = "SendVerificationTooOften",
 }

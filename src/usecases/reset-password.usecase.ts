@@ -13,6 +13,7 @@ interface ResetPasswordRequest {
   newPassword: string;
 }
 
+// TODO: Apply the VerifyUsecase (currently the verify usecase confirm the token although the new password is not confirmed yet)
 export class ResetPasswordUsecase {
   async execute(request: ResetPasswordRequest): Promise<void> {
     // Check if the user already exists
@@ -30,18 +31,14 @@ export class ResetPasswordUsecase {
     const verification = await prisma.verification.findFirst({
       where: {
         token: request.token,
-        type: "PasswordRecovery",
+        type:
+          request.credentialsType === CredentialsType.Email
+            ? "PasswordRecoveryByEmail"
+            : "PasswordRecoveryByPhone",
         userId: user.id,
       },
       orderBy: {
         sentAt: "desc",
-      },
-      include: {
-        user: {
-          select: {
-            password: true,
-          },
-        },
       },
     });
 
@@ -55,10 +52,7 @@ export class ResetPasswordUsecase {
     }
 
     // Check if the password is same
-    if (
-      verification.user.password &&
-      (await Bun.password.verify(request.newPassword, verification.user.password))
-    ) {
+    if (user.password && (await Bun.password.verify(request.newPassword, user.password))) {
       throw new UsecaseError(ApiCode.PasswordSame);
     }
 

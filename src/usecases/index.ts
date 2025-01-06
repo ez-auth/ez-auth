@@ -1,6 +1,5 @@
 import { ChangePasswordUsecase } from "./change-password.usecase";
-import { ConfirmEmailUsecase } from "./confirm-email.usecase";
-import { ConfirmPhoneUsecase } from "./confirm-phone.usecase";
+import { ConfirmSignUpUsecase } from "./confirm-sign-up.usecase";
 import { GenerateRefreshTokenUsecase } from "./generate-refresh-token.usecase";
 import { GenerateSignInDataUsecase } from "./generate-sign-in-data.usecase";
 import { GetListSessionUsecase } from "./get-list-session.usecase";
@@ -10,13 +9,14 @@ import { RequestChangePasswordUsecase } from "./request-change-password.usecase"
 import { RequestPasswordRecoveryUsecase } from "./request-password-recovery.usecase";
 import { ResetPasswordUsecase } from "./reset-password.usecase";
 import { RevokeSessionUsecase } from "./revoke-session.usecase";
+import { SendVerificationUsecase } from "./send-verification.usecase";
 import { SignInWithCredentialsUsecase } from "./sign-in-with-credentials.usecase";
 import { SignUpWithCredentialsUsecase } from "./sign-up-with-credentials.usecase";
 import { UpdateMFASettingsUsecase } from "./update-mfa-settings.usecase";
 import { VerifyMFATokenUsecase } from "./verify-mfa-token.usecase";
 import { VerifyTotpUsecase } from "./verify-totp.usecase";
+import { VerifyUsecase } from "./verify.usecase";
 
-export const confirmEmailUsecase = new ConfirmEmailUsecase();
 export const generateSignInDataUsecase = new GenerateSignInDataUsecase();
 export const getListSessionUsecase = new GetListSessionUsecase();
 export const handleOAuthUsecase = new HandleOAuthUsecase();
@@ -26,10 +26,12 @@ export const signInWithCredentialsUsecase = new SignInWithCredentialsUsecase();
 export const signUpWithCredentialsUsecase = new SignUpWithCredentialsUsecase();
 export const requestPasswordRecoveryUsecase = new RequestPasswordRecoveryUsecase();
 export const resetPasswordUsecase = new ResetPasswordUsecase();
-export const confirmPhoneUsecase = new ConfirmPhoneUsecase();
 export const requestChangePasswordUsecase = new RequestChangePasswordUsecase();
 export const verifyTotpUsecase = new VerifyTotpUsecase();
 export const changePasswordUsecase = new ChangePasswordUsecase();
 export const updateMFASettingsUsecase = new UpdateMFASettingsUsecase();
 export const verifyMFATokenUsecase = new VerifyMFATokenUsecase();
 export const generateRefreshTokenUsecase = new GenerateRefreshTokenUsecase();
+export const verifyUsecase = new VerifyUsecase();
+export const confirmSignUpUsecase = new ConfirmSignUpUsecase();
+export const sendVerificationUsecase = new SendVerificationUsecase();

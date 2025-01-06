@@ -14,9 +14,3 @@ export enum CredentialsType {
   Email = "Email",
   Phone = "Phone",
 }
-
-export enum SendVerificationType {
-  Email = "Email",
-  SMS = "SMS",
-  TOTP = "TOTP",
-}
