@@ -61,6 +61,9 @@ const envSchema = z.object({
 
   // MFA
   MFA_EXPIRY: z.coerce.number().default(60 * 5),
+  MFA_RESEND_EMAIL_DELAY: z.coerce.number().default(60 * 3),
+  MFA_RESEND_SMS_DELAY: z.coerce.number().default(60 * 3),
+  MFA_CODE_LENGTH: z.coerce.number().default(6),
 
   // Github
   GITHUB_ENABLED: z.coerce.boolean().default(false),

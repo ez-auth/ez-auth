@@ -33,8 +33,7 @@ export class VerifyMFATokenUsecase {
         },
       });
 
-      const isVerified =
-        !!verification && !verification.confirmedAt && verification.token === request.token;
+      const isVerified = !!verification && verification.token === request.token;
 
       if (!isVerified) {
         return false;

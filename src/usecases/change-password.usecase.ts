@@ -39,5 +39,7 @@ export class ChangePasswordUsecase {
         password: hashedPassword,
       },
     });
+
+    // TODO: Sign out all sessions based on user's settings/global config
   }
 }

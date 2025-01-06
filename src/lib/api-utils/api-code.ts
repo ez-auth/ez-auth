@@ -20,4 +20,5 @@ export enum ApiCode {
   UserBanned = "UserBanned",
   PasswordSame = "PasswordSame",
   SendVerificationTooOften = "SendVerificationTooOften",
+  SendMFATokenTooOften = "SendMFATokenTooOften",
 }

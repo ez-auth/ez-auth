@@ -87,7 +87,7 @@ export class SignUpWithCredentialsUsecase {
       case CredentialsType.Email:
         return Bun.randomUUIDv7("base64url");
       case CredentialsType.Phone:
-        return generateNumericCode(6);
+        return generateNumericCode(config.VERIFICATION_CODE_LENGTH);
       default:
         throw new UsecaseError(ApiCode.InvalidCredentials);
     }

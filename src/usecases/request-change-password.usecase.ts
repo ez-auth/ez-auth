@@ -3,11 +3,10 @@ import { HTTPException } from "hono/http-exception";
 
 import { config } from "@/config/config";
 import { CHANGE_PASSWORD_EMAIL_TEMPLATE_PATH } from "@/consts/html-email-template.const";
-import { sendEmail } from "@/lib/mailer";
-import { prisma } from "@/lib/prisma";
-import { sendSMS } from "@/lib/sms";
+import { CHANGE_PASSWORD_SMS_TEMPLATE_PATH } from "@/consts/sms-template.const";
 import { AuthUser } from "@/types/user.type";
 import { generateNumericCode } from "@/utils";
+import { sendMFATokenUsecase } from ".";
 
 interface RequestChangePasswordRequest {
   mfaProvider?: MFAProvider;
@@ -22,39 +21,29 @@ export class RequestChangePasswordUsecase {
       this.validateMFARequest(user, request.mfaProvider);
     }
 
+    // TODO: CHANGE_PASSWORD_REQUIRES_MFA can be moved to user settings, override global config
     if (config.CHANGE_PASSWORD_REQUIRES_MFA) {
-      const token = generateNumericCode(6);
+      const token = generateNumericCode(config.MFA_CODE_LENGTH);
 
-      switch (request.mfaProvider) {
-        case "Email":
-          await sendEmail({
-            subject: "Change your password",
-            to: user.email as string,
-            html: (await Bun.file(CHANGE_PASSWORD_EMAIL_TEMPLATE_PATH).text()).replaceAll(
-              "{{ .Code }}",
-              token,
-            ),
-          });
-          break;
-        case "SMS":
-          await sendSMS({
-            to: user.phone as string,
-            body: `Your change password code is ${token}`,
-          });
-          break;
-        case "TOTP":
-          // No need to store token
-          break;
+      const subject = "Change Password Request";
+      let content = "";
+      if (request.mfaProvider === "Email") {
+        const template = await Bun.file(CHANGE_PASSWORD_EMAIL_TEMPLATE_PATH).text();
+        content = template.replaceAll("{{ .Code }}", token);
+      } else if (request.mfaProvider === "SMS") {
+        const template = await Bun.file(CHANGE_PASSWORD_SMS_TEMPLATE_PATH).text();
+        content = template.replaceAll("{{ .Code }}", token);
       }
 
+      // Send MFA token if provider is Email or SMS
       if (request.mfaProvider === "Email" || request.mfaProvider === "SMS") {
-        await prisma.mFAToken.create({
-          data: {
-            userId: user.id,
-            type: "ChangePassword",
-            provider: request.mfaProvider,
-            token,
-          },
+        await sendMFATokenUsecase.execute({
+          subject,
+          content,
+          provider: request.mfaProvider,
+          token,
+          type: "ChangePassword",
+          user,
         });
       }
     }
