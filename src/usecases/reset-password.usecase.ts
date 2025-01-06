@@ -1,10 +1,8 @@
-import dayjs from "dayjs";
-
-import { config } from "@/config/config";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { prisma } from "@/lib/prisma";
 import { CredentialsType } from "@/types/user.type";
+import { verifyUsecase } from ".";
 
 interface ResetPasswordRequest {
   credentialsType: CredentialsType;
@@ -13,43 +11,18 @@ interface ResetPasswordRequest {
   newPassword: string;
 }
 
-// TODO: Apply the VerifyUsecase (currently the verify usecase confirm the token although the new password is not confirmed yet)
 export class ResetPasswordUsecase {
   async execute(request: ResetPasswordRequest): Promise<void> {
-    // Check if the user already exists
-    const user = await prisma.user.findUnique({
-      where: {
-        email: request.credentialsType === CredentialsType.Email ? request.identifier : undefined,
-        phone: request.credentialsType === CredentialsType.Phone ? request.identifier : undefined,
-      },
+    // Verify token
+    const verification = await verifyUsecase.execute({
+      identifier: request.identifier,
+      token: request.token,
+      type:
+        request.credentialsType === CredentialsType.Email
+          ? "PasswordRecoveryByEmail"
+          : "PasswordRecoveryByPhone",
     });
-    if (!user) {
-      throw new UsecaseError(ApiCode.UserNotFound);
-    }
-
-    // Find verification record
-    const verification = await prisma.verification.findFirst({
-      where: {
-        token: request.token,
-        type:
-          request.credentialsType === CredentialsType.Email
-            ? "PasswordRecoveryByEmail"
-            : "PasswordRecoveryByPhone",
-        userId: user.id,
-      },
-      orderBy: {
-        sentAt: "desc",
-      },
-    });
-
-    // Check if the token is valid
-    if (
-      !verification ||
-      !!verification.confirmedAt ||
-      dayjs(verification.sentAt).add(config.VERIFICATION_EXPIRY, "second").isBefore(dayjs())
-    ) {
-      throw new UsecaseError(ApiCode.InvalidConfirmationToken);
-    }
+    const { user } = verification;
 
     // Check if the password is same
     if (user.password && (await Bun.password.verify(request.newPassword, user.password))) {

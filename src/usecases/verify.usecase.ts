@@ -43,7 +43,6 @@ export class VerifyUsecase {
     // Check if the token is valid
     if (
       !verification ||
-      verification.confirmedAt ||
       dayjs(verification.sentAt)
         .add(request.expiry ?? config.VERIFICATION_EXPIRY, "second")
         .isBefore(dayjs())
