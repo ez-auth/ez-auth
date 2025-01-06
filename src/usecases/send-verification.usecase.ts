@@ -27,8 +27,8 @@ export class SendVerificationUsecase {
       console.log(request);
       const user = await prisma.user.findUnique({
         where: {
-          email: request.type === "PasswordRecoveryByEmail" ? request.identifier : undefined,
-          phone: request.type === "PasswordRecoveryByPhone" ? request.identifier : undefined,
+          email: EMAIL_BASE_TYPES.includes(request.type) ? request.identifier : undefined,
+          phone: PHONE_BASE_TYPES.includes(request.type) ? request.identifier : undefined,
         },
       });
       if (!user) {
