@@ -10,6 +10,7 @@
     "prisma:migrate-save": "dotenv -e .env -- bunx prisma migrate dev --schema src/lib/prisma/schema.prisma",
     "prisma:migrate-up": "dotenv -e .env -- bunx prisma migrate deploy --schema src/lib/prisma/schema.prisma",
     "prisma:clean": "dotenv -e .env -- bunx prisma migrate reset --schema src/lib/prisma/schema.prisma",
+    "prisma:seed": "bun run ./src/lib/prisma/seed.ts",
     "postinstall": "bun run prisma:generate",
     "postuninstall": "bun run prisma:generate"
   },

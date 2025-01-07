@@ -155,3 +155,23 @@ model MFAToken {
   @@index([userId, provider])
   @@index([userId, type, provider])
 }
+
+model AuditLog {
+  id        String  @id @default(cuid())
+  type      String
+  data      Json?
+  clientIp  String?
+  userAgent String?
+
+  createdAt DateTime @default(now())
+
+  @@index(fields: [type])
+}
+
+model SystemSetting {
+  id   String @id @default(cuid())
+  data Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
