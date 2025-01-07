@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger as httpLogger } from "hono/logger";
 
-import { config } from "./config/config";
+import { configService } from "./config/config.service";
 import { appErrorHandler, appNotFoundHandler } from "./lib/api-utils/app-error-handler";
 import { logger } from "./lib/logger";
 import { prisma } from "./lib/prisma";
@@ -58,6 +58,13 @@ async function main() {
    */
   await prisma.$connect();
   logger.info("✅ Database connected");
+
+  /**
+   * Sync settings
+   */
+  await configService.syncSettings();
+  const config = configService.getConfig();
+  logger.info("✅ Settings synced");
 
   /**
    * Bootstrap

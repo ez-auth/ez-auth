@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import { initialConfig } from "@/config";
 import { logger } from "@/lib/logger";
-import { config } from "@/config/config";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,7 @@ async function main() {
       },
     });
     if (adminUserExists > 0) {
-      logger.info("Admin user already exists");
+      logger.info("✅ Admin user already exists");
     } else {
       const hashedPassword = await Bun.password.hash("Admin@123");
       const adminUser = await prisma.user.create({
@@ -38,25 +38,26 @@ async function main() {
           },
         },
       });
-      logger.info(`Admin user created: ${adminUser.email} (ID: ${adminUser.id})`);
+      logger.info(`✅ Admin user created: ${adminUser.email} (ID: ${adminUser.id})`);
     }
 
     // Upsert system setting
-    // Check if system setting already exists
-    const systemSettingExists = await prisma.systemSetting.count();
-    if (systemSettingExists > 0) {
-      logger.info("System setting already exists");
-    } else {
-      await prisma.systemSetting.deleteMany();
-      await prisma.systemSetting.create({
+    await prisma.systemSetting.upsert({
+      where: {
+        id: 1,
+      },
+      create: {
         data: {
-          data: {
-            ...config,
-          },
+          ...initialConfig,
         },
-      });
-      logger.info("System setting created");
-    }
+      },
+      update: {
+        data: {
+          ...initialConfig,
+        },
+      },
+    });
+    logger.info("✅ System setting updated");
 
     logger.info("✅ Prisma seed completed");
   } catch (error) {

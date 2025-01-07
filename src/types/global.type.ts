@@ -6,5 +6,10 @@ declare global {
       emailChange?: string;
       phoneChange?: string;
     };
+
+    type UserMetadata = {
+      role: "user" | "superadmin";
+      [key: string]: any;
+    };
   }
 }

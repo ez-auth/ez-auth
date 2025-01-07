@@ -1,11 +1,11 @@
+import { VerificationType } from "@prisma/client";
 import dayjs from "dayjs";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { prisma } from "@/lib/prisma";
 import { EMAIL_BASE_TYPES, PHONE_BASE_TYPES, VerificationData } from "@/types/verification.type";
-import { VerificationType } from "@prisma/client";
 
 interface VerifyRequest {
   token: string;
@@ -17,6 +17,8 @@ interface VerifyRequest {
 
 export class VerifyUsecase {
   async execute(request: VerifyRequest) {
+    const config = configService.getConfig();
+
     // Get user with email/phone
     const user = await prisma.user.findUnique({
       where: {

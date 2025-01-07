@@ -1,6 +1,6 @@
 import { VerificationType } from "@prisma/client";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { PASSWORD_RECOVERY_EMAIL_TEMPLATE_PATH } from "@/consts/html-email-template.const";
 import { PASSWORD_RECOVERY_SMS_TEMPLATE_PATH } from "@/consts/sms-template.const";
 import { CredentialsType } from "@/types/user.type";
@@ -15,6 +15,8 @@ interface RequestPasswordRecoveryRequest {
 
 export class RequestPasswordRecoveryUsecase {
   async execute(request: RequestPasswordRecoveryRequest): Promise<void> {
+    const config = configService.getConfig();
+
     // Create verification token
     const token = generateNumericCode(config.VERIFICATION_CODE_LENGTH);
 

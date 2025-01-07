@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { validator } from "hono-openapi/zod";
 import { z } from "zod";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { apiResponse } from "@/lib/api-utils/api-response";
 import { jwtAuth } from "@/lib/middlewares/jwt.middleware";
 import { verifyMFA } from "@/lib/middlewares/mfa.middleware";
@@ -12,6 +12,7 @@ import { changePasswordUsecase, requestChangePasswordUsecase } from "@/usecases"
 import { createPasswordSchema } from "@/utils/zod.util";
 
 const router = new Hono();
+const config = configService.getConfig();
 
 router.post(
   "/request",

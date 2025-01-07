@@ -4,7 +4,7 @@ import { getConnInfo } from "hono/bun";
 import { z } from "zod";
 import "zod-openapi/extend";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { apiResponse } from "@/lib/api-utils/api-response";
 import { jwtAuth } from "@/lib/middlewares/jwt.middleware";
 import { baseDescribeRoute } from "@/lib/openapi";
@@ -25,6 +25,7 @@ import {
 import { createPasswordSchema } from "@/utils/zod.util";
 
 const route = new Hono();
+const config = configService.getConfig();
 
 route.get("/me", baseDescribeRoute("Get current user", userSchema), jwtAuth, async (c) => {
   const user = c.get("user");

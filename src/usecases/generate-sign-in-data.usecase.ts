@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { generateAccessToken } from "@/lib/jwt";
 import { prisma } from "@/lib/prisma";
 import { generateRefreshTokenUsecase } from ".";
@@ -20,6 +20,8 @@ interface GenerateSignInDataResponse {
 
 export class GenerateSignInDataUsecase {
   async execute(request: GenerateSignInDataRequest): Promise<GenerateSignInDataResponse> {
+    const config = configService.getConfig();
+
     // Create new session
     const refreshToken = await generateRefreshTokenUsecase.execute();
     const session = await prisma.session.create({

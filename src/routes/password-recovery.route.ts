@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { validator } from "hono-openapi/zod";
 import { z } from "zod";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { apiResponse } from "@/lib/api-utils/api-response";
 import { baseDescribeRoute } from "@/lib/openapi";
 import { CredentialsType } from "@/types/user.type";
@@ -10,6 +10,7 @@ import { requestPasswordRecoveryUsecase, resetPasswordUsecase } from "@/usecases
 import { createPasswordSchema } from "@/utils/zod.util";
 
 const router = new Hono();
+const config = configService.getConfig();
 
 router.post(
   "/request",

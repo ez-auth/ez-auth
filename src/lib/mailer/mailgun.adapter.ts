@@ -1,8 +1,10 @@
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { logger } from "@/lib/logger";
 import type { SendEmailParams } from "./mailer.type";
 
 export const mailgunSendEmail = async (params: SendEmailParams): Promise<boolean> => {
+  const config = configService.getConfig();
+
   if (!config.MAILGUN_API_KEY || !config.MAILGUN_DOMAIN) {
     throw new Error("Mailgun is not configured");
   }

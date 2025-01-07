@@ -68,7 +68,7 @@ const envSchema = z.object({
   MFA_EXPIRY: z.coerce.number().default(60 * 5),
   MFA_RESEND_EMAIL_DELAY: z.coerce.number().default(60 * 3),
   MFA_RESEND_SMS_DELAY: z.coerce.number().default(60 * 3),
-  MFA_CODE_LENGTH: z.coerce.number().default(6),
+  MFA_TOTP_DIGITS: z.coerce.number().default(6),
 
   // Github
   GITHUB_ENABLED: booleanStringSchema.default(false),
@@ -99,4 +99,4 @@ const parseConfig = () => {
 
 export type Config = z.infer<typeof envSchema>;
 
-export const config: Config = parseConfig();
+export const initialConfig: Config = parseConfig();

@@ -1,6 +1,6 @@
 import { HTTPException } from "hono/http-exception";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import type { Token } from "@/lib/oauth/types";
 import { toQueryParams } from "@/utils";
 import type {
@@ -20,6 +20,7 @@ type GithubAuthFlowParams = {
   code: string | undefined;
 };
 
+const config = configService.getConfig();
 const userAgent = config.ISSUER;
 
 export class GithubAuthFlow {

@@ -1,4 +1,3 @@
-import { config } from "@/config/config";
 import { z } from "zod";
 
 export const booleanStringSchema = z

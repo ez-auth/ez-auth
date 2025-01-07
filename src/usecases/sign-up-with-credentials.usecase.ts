@@ -1,6 +1,6 @@
 import { URLSearchParams } from "node:url";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { SIGN_UP_CONFIRMATION_EMAIL_TEMPLATE_PATH } from "@/consts/html-email-template.const";
 import { SIGN_UP_CONFIRMATION_SMS_TEMPLATE_PATH } from "@/consts/sms-template.const";
 import { ApiCode } from "@/lib/api-utils/api-code";
@@ -20,6 +20,8 @@ interface SignUpWithCredentialsRequest {
 
 export class SignUpWithCredentialsUsecase {
   async execute(request: SignUpWithCredentialsRequest): Promise<void> {
+    const config = configService.getConfig();
+
     // Check if the user already exists
     const userExists = await prisma.user.count({
       where: {
@@ -83,6 +85,8 @@ export class SignUpWithCredentialsUsecase {
   }
 
   private generateConfirmationToken(credentialsType: CredentialsType) {
+    const config = configService.getConfig();
+
     switch (credentialsType) {
       case CredentialsType.Email:
         return Bun.randomUUIDv7("base64url");

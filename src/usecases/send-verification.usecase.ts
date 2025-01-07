@@ -1,13 +1,13 @@
+import { VerificationType } from "@prisma/client";
 import dayjs from "dayjs";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { sendEmail } from "@/lib/mailer";
 import { prisma } from "@/lib/prisma";
 import { sendSMS } from "@/lib/sms";
 import { EMAIL_BASE_TYPES, PHONE_BASE_TYPES, VerificationData } from "@/types/verification.type";
-import { VerificationType } from "@prisma/client";
 
 interface SendVerificationRequest {
   type: VerificationType;
@@ -22,6 +22,8 @@ interface SendVerificationRequest {
 
 export class SendVerificationUsecase {
   async execute(request: SendVerificationRequest) {
+    const config = configService.getConfig();
+
     // Check if the user already exists if not has userId to optimize number of queries
     if (!request.userId) {
       const user = await prisma.user.findUnique({

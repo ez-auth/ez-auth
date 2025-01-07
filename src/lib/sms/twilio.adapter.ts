@@ -1,7 +1,9 @@
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import type { SendSMSParams } from "./sms.type";
 
 export const twilioSendSMS = async (params: SendSMSParams) => {
+  const config = configService.getConfig();
+
   if (!config.TWILIO_ACCOUNT_SID || !config.TWILIO_AUTH_TOKEN || !config.TWILIO_PHONE_NUMBER) {
     throw new Error("Twilio is not configured");
   }

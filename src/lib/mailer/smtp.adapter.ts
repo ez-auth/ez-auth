@@ -1,10 +1,12 @@
 import * as nodemailer from "nodemailer";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { logger } from "@/lib/logger";
 import type { SendEmailParams } from "./mailer.type";
 
 export const smtpSendEmail = async (params: SendEmailParams): Promise<boolean> => {
+  const config = configService.getConfig();
+
   if (!config.SMTP_HOST || !config.SMTP_PORT || !config.SMTP_USER || !config.SMTP_PASS) {
     throw new Error("SMTP is not configured");
   }

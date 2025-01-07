@@ -1,6 +1,6 @@
 import { MFATokenType } from "@prisma/client";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { sendEmail } from "@/lib/mailer";
@@ -8,7 +8,6 @@ import { prisma } from "@/lib/prisma";
 import { sendSMS } from "@/lib/sms";
 import { AuthUser } from "@/types/user.type";
 import dayjs from "dayjs";
-import { HTTPException } from "hono/http-exception";
 
 interface SendMFATokenRequest {
   provider: "Email" | "SMS";
@@ -21,6 +20,8 @@ interface SendMFATokenRequest {
 
 export class SendMFATokenUsecase {
   async execute(request: SendMFATokenRequest): Promise<void> {
+    const config = configService.getConfig();
+
     // Check spam send MFA
     const lastToken = await prisma.mFAToken.findFirst({
       where: {

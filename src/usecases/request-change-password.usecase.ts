@@ -1,7 +1,7 @@
 import { MFAProvider } from "@prisma/client";
 import { HTTPException } from "hono/http-exception";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { CHANGE_PASSWORD_EMAIL_TEMPLATE_PATH } from "@/consts/html-email-template.const";
 import { CHANGE_PASSWORD_SMS_TEMPLATE_PATH } from "@/consts/sms-template.const";
 import { AuthUser } from "@/types/user.type";
@@ -14,6 +14,8 @@ interface RequestChangePasswordRequest {
 
 export class RequestChangePasswordUsecase {
   async execute(user: AuthUser, request: RequestChangePasswordRequest): Promise<void> {
+    const config = configService.getConfig();
+
     if (config.CHANGE_PASSWORD_REQUIRES_MFA && !request.mfaProvider) {
       throw new HTTPException(400, { message: "MFA provider is required" });
     }
@@ -23,7 +25,7 @@ export class RequestChangePasswordUsecase {
 
     // TODO: CHANGE_PASSWORD_REQUIRES_MFA can be moved to user settings, override global config
     if (config.CHANGE_PASSWORD_REQUIRES_MFA) {
-      const token = generateNumericCode(config.MFA_CODE_LENGTH);
+      const token = generateNumericCode(config.MFA_TOTP_DIGITS);
 
       const subject = "Change Password Request";
       let content = "";

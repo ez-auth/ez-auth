@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { getConnInfo } from "hono/bun";
 import { getCookie } from "hono/cookie";
 
-import { config } from "@/config/config";
+import { configService } from "@/config/config.service";
 import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { githubAuthMiddleware } from "@/lib/oauth/github/github-auth.middleware";
@@ -11,6 +11,7 @@ import { IdentityProvider } from "@/types/user.type";
 import { handleOAuthUsecase } from "@/usecases";
 
 const route = new Hono();
+const config = configService.getConfig();
 
 route.use(
   "/*",
