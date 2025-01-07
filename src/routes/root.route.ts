@@ -4,6 +4,7 @@ import { getConnInfo } from "hono/bun";
 import { z } from "zod";
 import "zod-openapi/extend";
 
+import { config } from "@/config/config";
 import { apiResponse } from "@/lib/api-utils/api-response";
 import { jwtAuth } from "@/lib/middlewares/jwt.middleware";
 import { baseDescribeRoute } from "@/lib/openapi";
@@ -21,6 +22,7 @@ import {
   signInWithCredentialsUsecase,
   signUpWithCredentialsUsecase,
 } from "@/usecases";
+import { createPasswordSchema } from "@/utils/zod.util";
 
 const route = new Hono();
 
@@ -38,7 +40,14 @@ route.post(
     z.strictObject({
       credentialsType: z.nativeEnum(CredentialsType).default(CredentialsType.Email),
       identifier: z.string(),
-      password: z.string(),
+      password: createPasswordSchema({
+        minLength: config.PASSWORD_MIN_LENGTH,
+        maxLength: config.PASSWORD_MAX_LENGTH,
+        requireDigit: config.PASSWORD_REQUIRES_DIGIT,
+        requireUppercase: config.PASSWORD_REQUIRES_UPPERCASE,
+        requireLowercase: config.PASSWORD_REQUIRES_LOWERCASE,
+        requireSymbol: config.PASSWORD_REQUIRES_SYMBOL,
+      }),
       redirectUrl: z.string().url().optional(),
       metadata: z.any().optional(),
     }),

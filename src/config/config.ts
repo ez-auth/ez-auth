@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { logger } from "@/lib/logger";
+import { booleanStringSchema } from "@/utils/zod.util";
 
 const envSchema = z.object({
   // App
@@ -22,7 +23,7 @@ const envSchema = z.object({
   JWT_EXPIRY: z.coerce.number().default(3600),
 
   // Mailer
-  MAILER_ENABLED: z.coerce.boolean().default(true),
+  MAILER_ENABLED: booleanStringSchema.default(true),
   MAILER_PROVIDER: z.enum(["SMTP", "Mailgun"]).optional(),
   MAILER_SENDER_NAME: z.string().default("EzAuth"),
 
@@ -38,7 +39,7 @@ const envSchema = z.object({
   SMTP_PASS: z.string().optional(),
 
   // SMS
-  SMS_ENABLED: z.coerce.boolean().default(false),
+  SMS_ENABLED: booleanStringSchema.default(false),
   SMS_PROVIDER: z.enum(["Twilio"]).optional(),
 
   // Twilio
@@ -47,9 +48,13 @@ const envSchema = z.object({
   TWILIO_PHONE_NUMBER: z.string().optional(),
 
   // Password
+  CHANGE_PASSWORD_REQUIRES_MFA: booleanStringSchema.default(false),
   PASSWORD_MIN_LENGTH: z.coerce.number().default(8),
   PASSWORD_MAX_LENGTH: z.coerce.number().default(32),
-  CHANGE_PASSWORD_REQUIRES_MFA: z.coerce.boolean().default(false),
+  PASSWORD_REQUIRES_DIGIT: booleanStringSchema.default(false),
+  PASSWORD_REQUIRES_UPPERCASE: booleanStringSchema.default(false),
+  PASSWORD_REQUIRES_LOWERCASE: booleanStringSchema.default(false),
+  PASSWORD_REQUIRES_SYMBOL: booleanStringSchema.default(false),
 
   // Session
   SESSION_EXPIRY: z.coerce.number().default(60 * 60 * 24 * 30),
@@ -66,12 +71,12 @@ const envSchema = z.object({
   MFA_CODE_LENGTH: z.coerce.number().default(6),
 
   // Github
-  GITHUB_ENABLED: z.coerce.boolean().default(false),
+  GITHUB_ENABLED: booleanStringSchema.default(false),
   GITHUB_CLIENT_ID: z.string().default(""),
   GITHUB_CLIENT_SECRET: z.string().default(""),
 
   // Google
-  GOOGLE_ENABLED: z.coerce.boolean().default(false),
+  GOOGLE_ENABLED: booleanStringSchema.default(false),
   GOOGLE_CLIENT_ID: z.string().default(""),
   GOOGLE_CLIENT_SECRET: z.string().default(""),
 });

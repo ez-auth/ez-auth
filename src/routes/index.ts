@@ -47,12 +47,6 @@ export const setUpStatic = (app: Hono) => {
     "/static/*",
     serveStatic({
       root: "./",
-      onFound(path, c) {
-        console.log(path, c);
-      },
-      onNotFound(path, c) {
-        console.log(path, c);
-      },
     }),
   );
 };

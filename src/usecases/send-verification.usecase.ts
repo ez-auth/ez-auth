@@ -24,7 +24,6 @@ export class SendVerificationUsecase {
   async execute(request: SendVerificationRequest) {
     // Check if the user already exists if not has userId to optimize number of queries
     if (!request.userId) {
-      console.log(request);
       const user = await prisma.user.findUnique({
         where: {
           email: EMAIL_BASE_TYPES.includes(request.type) ? request.identifier : undefined,
