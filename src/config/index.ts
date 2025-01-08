@@ -91,9 +91,6 @@ const parseConfig = () => {
     process.exit(1);
   }
 
-  parsed.data.MAILER_ENABLED = !!parsed.data.MAILER_PROVIDER;
-  parsed.data.SMS_ENABLED = !!parsed.data.SMS_PROVIDER;
-
   return parsed.data;
 };
 
