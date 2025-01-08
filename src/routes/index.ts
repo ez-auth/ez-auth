@@ -37,21 +37,12 @@ export const setUpApiDocs = (app: Hono) => {
     "/reference",
     apiReference({
       spec: {
-        url: "/api/openapi",
+        url: "/openapi",
       },
     }),
   );
 
-  app.get("/docs", swaggerUI({ url: "/api/openapi" }));
-};
-
-export const setUpStatic = (app: Hono) => {
-  app.use(
-    "/static/*",
-    serveStatic({
-      root: "./",
-    }),
-  );
+  app.get("/swagger", swaggerUI({ url: "/openapi" }));
 };
 
 export const applyRoutes = (app: Hono) => {

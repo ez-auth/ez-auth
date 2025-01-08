@@ -62,7 +62,7 @@ export class SignUpWithCredentialsUsecase {
       const template = await Bun.file(SIGN_UP_CONFIRMATION_EMAIL_TEMPLATE_PATH).text();
       content = template.replaceAll(
         "{{ .ConfirmationLink }}",
-        `${config.API_URL}/api/confirm-sign-up?${new URLSearchParams({
+        `${config.API_URL}/confirm-sign-up?${new URLSearchParams({
           token,
           type: CredentialsType.Email,
           identifier: request.identifier,
