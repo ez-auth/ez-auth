@@ -7,7 +7,7 @@ import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { googleAuthMiddleware } from "@/lib/oauth/google/google-auth.middleware";
 import type { GoogleUser } from "@/lib/oauth/google/google-auth.type";
-import { IdentityProvider } from "@/types/user.type";
+import { OAuthProvider } from "@/types/user.type";
 import { handleOAuthUsecase } from "@/usecases";
 
 const route = new Hono();
@@ -34,7 +34,7 @@ route.get("/callback", async (c) => {
   }
 
   const response = await handleOAuthUsecase.execute({
-    provider: IdentityProvider.Google,
+    provider: OAuthProvider.Google,
     providerId: user.id,
     providerEmail: user.email,
     providerData: { user, granted_scopes: c.get("granted-scopes") },

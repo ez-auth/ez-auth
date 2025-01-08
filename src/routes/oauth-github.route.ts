@@ -7,7 +7,7 @@ import { ApiCode } from "@/lib/api-utils/api-code";
 import { UsecaseError } from "@/lib/api-utils/usecase-error";
 import { githubAuthMiddleware } from "@/lib/oauth/github/github-auth.middleware";
 import type { GitHubUser } from "@/lib/oauth/github/github-auth.type";
-import { IdentityProvider } from "@/types/user.type";
+import { OAuthProvider } from "@/types/user.type";
 import { handleOAuthUsecase } from "@/usecases";
 
 const route = new Hono();
@@ -34,7 +34,7 @@ route.get("/callback", async (c) => {
   }
 
   const response = await handleOAuthUsecase.execute({
-    provider: IdentityProvider.Github,
+    provider: OAuthProvider.Github,
     providerId: user.id.toString(),
     providerEmail: user.email,
     providerData: { user, granted_scopes: c.get("granted-scopes") },

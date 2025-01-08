@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import type { IdentityProvider } from "@/types/user.type";
+import type { OAuthProvider } from "@/types/user.type";
 import { GenerateSignInDataUsecase } from "./generate-sign-in-data.usecase";
 
 interface HandleOAuthRequest {
-  provider: IdentityProvider;
+  provider: OAuthProvider;
   providerId: string;
   providerData: any;
   providerEmail?: string | null;
@@ -22,7 +22,7 @@ export class HandleOAuthUsecase {
         email: request.providerEmail ?? undefined,
       },
       include: {
-        identities: {
+        oAuthConnections: {
           where: {
             provider: request.provider,
             providerId: request.providerId,
@@ -31,15 +31,15 @@ export class HandleOAuthUsecase {
       },
     });
 
-    // If both user and identity already exists => case sign-in
-    if (user && user.identities.length > 0) {
+    // If both user and oauth already exists => case sign-in
+    if (user && user.oAuthConnections.length > 0) {
       return this.generateSignInDataUsecase.execute({
         userId: user.id,
       });
     }
-    // If only user exists => create identity link to user
-    if (user && user.identities.length === 0) {
-      await prisma.identity.create({
+    // If only user exists => create oauth link to user
+    if (user && user.oAuthConnections.length === 0) {
+      await prisma.oAuthConnection.create({
         data: {
           provider: request.provider,
           providerId: request.providerId,
@@ -60,7 +60,7 @@ export class HandleOAuthUsecase {
     const newUser = await prisma.user.create({
       data: {
         email: request.providerEmail,
-        identities: {
+        oAuthConnections: {
           create: {
             provider: request.provider,
             providerId: request.providerId,

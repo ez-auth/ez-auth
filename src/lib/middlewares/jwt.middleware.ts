@@ -36,7 +36,7 @@ export const jwtAuth = createMiddleware<{ Variables: VariablesType }>(async (c, 
           enabledTOTP: true,
         },
       },
-      identities: true,
+      oAuthConnections: true,
     },
     where: {
       id: jwtPayload.sub,
