@@ -4,6 +4,12 @@ import { Config, initialConfig } from ".";
 export class ConfigService {
   private static instance: ConfigService;
   private config: Config = initialConfig;
+  public static immutableKeys: Array<keyof Config> = [
+    "API_HOST",
+    "API_URL",
+    "API_PORT",
+    "DATABASE_URL",
+  ];
 
   private constructor() {}
 
@@ -18,20 +24,42 @@ export class ConfigService {
     return this.config;
   }
 
-  public async syncSettings() {
-    const settings = await prisma.systemSetting.findUnique({
-      where: {
-        id: 1,
-      },
-    });
+  static getOmittedInitialConfig() {
+    const config = initialConfig;
 
-    if (!settings) {
+    for (const key of ConfigService.immutableKeys) {
+      delete config[key];
+    }
+
+    return config;
+  }
+
+  public async syncConfig(data?: Partial<Config>) {
+    // Delete immutable config keys
+    for (const key of ConfigService.immutableKeys) {
+      delete data?.[key];
+    }
+
+    if (!data) {
+      const existingConfig = await prisma.systemConfig.findUnique({
+        where: {
+          id: 1,
+        },
+      });
+      if (!existingConfig?.data) {
+        return;
+      }
+
+      this.config = {
+        ...this.config,
+        ...(existingConfig?.data as Partial<Config>),
+      };
       return;
     }
 
     this.config = {
       ...this.config,
-      ...(settings.data as Partial<Config>),
+      ...(data as Partial<Config>),
     };
   }
 }

@@ -1,4 +1,4 @@
-import { initialConfig } from "@/config";
+import { ConfigService } from "@/config/config.service";
 import { logger } from "@/lib/logger";
 import { PrismaClient } from "@prisma/client";
 
@@ -29,6 +29,7 @@ async function main() {
           },
         },
       });
+
       // Audit log
       await prisma.auditLog.create({
         data: {
@@ -41,23 +42,23 @@ async function main() {
       logger.info(`✅ Admin user created: ${adminUser.email} (ID: ${adminUser.id})`);
     }
 
-    // Upsert system setting
-    await prisma.systemSetting.upsert({
+    // Upsert system config
+    await prisma.systemConfig.upsert({
       where: {
         id: 1,
       },
       create: {
         data: {
-          ...initialConfig,
+          ...ConfigService.getOmittedInitialConfig(),
         },
       },
       update: {
         data: {
-          ...initialConfig,
+          ...ConfigService.getOmittedInitialConfig(),
         },
       },
     });
-    logger.info("✅ System setting updated");
+    logger.info("✅ System config updated");
 
     logger.info("✅ Prisma seed completed");
   } catch (error) {

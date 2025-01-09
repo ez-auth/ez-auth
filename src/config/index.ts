@@ -3,7 +3,7 @@ import { z } from "zod";
 import { logger } from "@/lib/logger";
 import { booleanStringSchema } from "@/utils/zod.util";
 
-const envSchema = z.object({
+export const envSchema = z.object({
   // App
   ISSUER: z.string().default("EzAuth"),
 

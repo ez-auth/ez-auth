@@ -169,7 +169,7 @@ model AuditLog {
   @@index(fields: [type])
 }
 
-model SystemSetting {
+model SystemConfig {
   id   Int  @id @default(1)
   data Json
 

@@ -48,11 +48,11 @@ async function main() {
   logger.info("✅ Database connected");
 
   /**
-   * Sync settings
+   * Sync config
    */
-  await configService.syncSettings();
+  await configService.syncConfig();
   const config = configService.getConfig();
-  logger.info("✅ Settings synced");
+  logger.info("✅ Config synced");
 
   /**
    * Bootstrap
