@@ -12,7 +12,7 @@ const route = new Hono();
 
 route.post(
   "/revoke",
-  baseDescribeRoute("Revoke session"),
+  baseDescribeRoute({ description: "Delete session", tags: ["Session"] }),
   jwtAuth,
   validator("json", z.strictObject({ sessionId: z.string() })),
   async (c) => {
@@ -26,7 +26,7 @@ route.post(
 
 route.get(
   "/",
-  baseDescribeRoute("Get list of sessions", listSessionSchema),
+  baseDescribeRoute({ description: "Get all sessions", tags: ["Session"] }, listSessionSchema),
   jwtAuth,
   validator(
     "query",

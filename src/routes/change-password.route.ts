@@ -16,7 +16,7 @@ const config = configService.getConfig();
 
 router.post(
   "/request",
-  baseDescribeRoute("Request change password"),
+  baseDescribeRoute({ description: "Request change password", tags: ["Change Password"] }),
   jwtAuth,
   validator(
     "json",
@@ -33,7 +33,7 @@ router.post(
 
 router.post(
   "/",
-  baseDescribeRoute("Change password"),
+  baseDescribeRoute({ description: "Change password", tags: ["Change Password"] }),
   jwtAuth,
   ...verifyMFA(true, "ChangePassword"),
   validator(

@@ -15,7 +15,7 @@ const route = new Hono();
 
 route.post(
   "/system-configs",
-  baseDescribeRoute("Update system config"),
+  baseDescribeRoute({ description: "Update system config", tags: ["Superadmin"] }),
   jwtAuth,
   validator("json", z.any()),
   isSuperadmin,
@@ -28,7 +28,7 @@ route.post(
 
 route.get(
   "/system-configs",
-  baseDescribeRoute("Get system config", envSchema),
+  baseDescribeRoute({ description: "Get system config", tags: ["Superadmin"] }, envSchema),
   jwtAuth,
   isSuperadmin,
   async (c) => {

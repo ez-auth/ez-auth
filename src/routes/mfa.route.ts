@@ -12,7 +12,10 @@ const route = new Hono();
 
 route.put(
   "/settings",
-  baseDescribeRoute("Update MFA settings", updateMFASettingsResponseSchema),
+  baseDescribeRoute(
+    { description: "Update MFA settings", tags: ["MFA"] },
+    updateMFASettingsResponseSchema,
+  ),
   jwtAuth,
   validator(
     "json",
