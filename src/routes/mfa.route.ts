@@ -10,12 +10,11 @@ import { updateMFASettingsUsecase } from "@/usecases";
 
 const route = new Hono();
 
-route.put(
+const tags = ["MFA"];
+
+route.post(
   "/settings",
-  baseDescribeRoute(
-    { description: "Update MFA settings", tags: ["MFA"] },
-    updateMFASettingsResponseSchema,
-  ),
+  baseDescribeRoute({ description: "Update MFA settings", tags }, updateMFASettingsResponseSchema),
   jwtAuth,
   validator(
     "json",

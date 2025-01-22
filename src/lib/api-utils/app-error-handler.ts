@@ -9,11 +9,13 @@ import { httpStatusToApiCode } from "./http-status-to-api-code";
 import { isUsecaseError } from "./usecase-error";
 
 export const appErrorHandler = (error: Error | HTTPResponseError, c: Context) => {
+  const message = error.message === "" ? undefined : error.message;
+
   // UsecaseError
   if (isUsecaseError(error)) {
     return apiResponse(c, {
       code: error.code,
-      error: error.message || undefined,
+      error: message,
     });
   }
 
@@ -23,7 +25,7 @@ export const appErrorHandler = (error: Error | HTTPResponseError, c: Context) =>
       c,
       {
         code: httpStatusToApiCode(error.status),
-        error: error.message,
+        error: message,
       },
       error.status || 500,
     );
@@ -35,7 +37,7 @@ export const appErrorHandler = (error: Error | HTTPResponseError, c: Context) =>
     c,
     {
       code: ApiCode.InternalError,
-      error: error.message,
+      error: message,
     },
     500,
   );

@@ -1,3 +1,4 @@
+import { ClientApiKeyType } from "@prisma/client";
 import { z } from "zod";
 
 export const userSchema = z.object({
@@ -54,3 +55,18 @@ export const updateMFASettingsResponseSchema = z.object({
   totpSecret: z.string().optional(),
   backupKey: z.string().optional(),
 });
+
+export const clientApiKeySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.enum([ClientApiKeyType.Admin, ClientApiKeyType.Public]),
+  key: z.string(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
+
+export const listClientApiKeysResponseSchema = z.array(clientApiKeySchema);
+
+export const createClientApiKeyResponseSchema = clientApiKeySchema;
+
+export const getClientApiKeyResponseSchema = clientApiKeySchema;

@@ -14,9 +14,11 @@ import { createPasswordSchema } from "@/utils/zod.util";
 const router = new Hono();
 const config = configService.getConfig();
 
+const tags = ["Change Password"];
+
 router.post(
   "/request",
-  baseDescribeRoute({ description: "Request change password", tags: ["Change Password"] }),
+  baseDescribeRoute({ description: "Request change password", tags }),
   jwtAuth,
   validator(
     "json",
@@ -33,7 +35,7 @@ router.post(
 
 router.post(
   "/",
-  baseDescribeRoute({ description: "Change password", tags: ["Change Password"] }),
+  baseDescribeRoute({ description: "Change password", tags }),
   jwtAuth,
   ...verifyMFA(true, "ChangePassword"),
   validator(

@@ -10,9 +10,11 @@ import { getListSessionUsecase, revokeSessionUsecase } from "@/usecases";
 
 const route = new Hono();
 
+const tags = ["Sessions"];
+
 route.post(
   "/revoke",
-  baseDescribeRoute({ description: "Delete session", tags: ["Session"] }),
+  baseDescribeRoute({ description: "Delete session", tags }),
   jwtAuth,
   validator("json", z.strictObject({ sessionId: z.string() })),
   async (c) => {
@@ -26,7 +28,7 @@ route.post(
 
 route.get(
   "/",
-  baseDescribeRoute({ description: "Get all sessions", tags: ["Session"] }, listSessionSchema),
+  baseDescribeRoute({ description: "Get all sessions", tags }, listSessionSchema),
   jwtAuth,
   validator(
     "query",

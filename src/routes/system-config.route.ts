@@ -12,10 +12,11 @@ import { UpdateSystemConfigUsecase } from "@/usecases/update-system-config.useca
 import { z } from "zod";
 
 const route = new Hono();
+const tags = ["System configs"];
 
 route.post(
   "/system-configs",
-  baseDescribeRoute({ description: "Update system config", tags: ["Superadmin"] }),
+  baseDescribeRoute({ description: "Update system config", tags }),
   jwtAuth,
   validator("json", z.any()),
   isSuperadmin,
@@ -28,7 +29,7 @@ route.post(
 
 route.get(
   "/system-configs",
-  baseDescribeRoute({ description: "Get system config", tags: ["Superadmin"] }, envSchema),
+  baseDescribeRoute({ description: "Get system config", tags }, envSchema),
   jwtAuth,
   isSuperadmin,
   async (c) => {
@@ -37,4 +38,4 @@ route.get(
   },
 );
 
-export const superadminRoute = route;
+export const systemConfigRoute = route;

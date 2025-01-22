@@ -12,9 +12,11 @@ import { createPasswordSchema } from "@/utils/zod.util";
 const router = new Hono();
 const config = configService.getConfig();
 
+const tags = ["Password Recovery"];
+
 router.post(
   "/request",
-  baseDescribeRoute({ description: "Request password recovery", tags: ["Password Recovery"] }),
+  baseDescribeRoute({ description: "Request password recovery", tags, security: [] }),
   validator(
     "json",
     z.strictObject({
@@ -31,7 +33,7 @@ router.post(
 
 router.post(
   "/reset",
-  baseDescribeRoute({ description: "Reset password", tags: ["Password Recovery"] }),
+  baseDescribeRoute({ description: "Reset password", tags, security: [] }),
   validator(
     "json",
     z.strictObject({

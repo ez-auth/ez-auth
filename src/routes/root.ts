@@ -27,9 +27,11 @@ import { createPasswordSchema } from "@/utils/zod.util";
 const route = new Hono();
 const config = configService.getConfig();
 
+const tags = ["General"];
+
 route.get(
   "/me",
-  baseDescribeRoute({ description: "Get current user", tags: ["General"] }, userSchema),
+  baseDescribeRoute({ description: "Get current user", tags }, userSchema),
   jwtAuth,
   async (c) => {
     const user = c.get("user");
@@ -41,7 +43,7 @@ route.get(
 route.post(
   "/sign-up",
   baseDescribeRoute(
-    { description: "Sign up with credentials", tags: ["General"] },
+    { description: "Sign up with credentials", tags, security: [] },
     signInWithCredentialsResponseSchema,
   ),
   validator(
@@ -71,7 +73,7 @@ route.post(
 route.post(
   "/sign-in",
   baseDescribeRoute(
-    { description: "Sign in with credentials", tags: ["General"] },
+    { description: "Sign in with credentials", tags, security: [] },
     signInWithCredentialsResponseSchema,
   ),
   validator(
@@ -98,7 +100,7 @@ route.post(
 route.get(
   "/confirm-sign-up",
   baseDescribeRoute(
-    { description: "Confirm sign up", tags: ["General"] },
+    { description: "Confirm sign up", tags, security: [] },
     confirmSignUpResponseSchema,
   ),
   validator(
@@ -126,7 +128,7 @@ route.get(
 route.post(
   "/refresh-token",
   baseDescribeRoute(
-    { description: "Refresh token", tags: ["General"] },
+    { description: "Refresh token", tags, security: [] },
     refreshTokenResponseSchema,
   ),
   validator("json", z.strictObject({ refreshToken: z.string() })),
@@ -141,17 +143,12 @@ route.post(
   },
 );
 
-route.get(
-  "/sign-out",
-  baseDescribeRoute({ description: "Sign out", tags: ["General"] }),
-  jwtAuth,
-  async (c) => {
-    await revokeSessionUsecase.execute(c.get("user"), {
-      sessionId: c.get("sessionId"),
-    });
+route.get("/sign-out", baseDescribeRoute({ description: "Sign out", tags }), jwtAuth, async (c) => {
+  await revokeSessionUsecase.execute(c.get("user"), {
+    sessionId: c.get("sessionId"),
+  });
 
-    return apiResponse(c);
-  },
-);
+  return apiResponse(c);
+});
 
 export const rootRoute = route;

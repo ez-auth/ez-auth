@@ -44,11 +44,11 @@ model User {
 }
 
 model OAuthConnection {
-  id            String   @id @default(cuid())
-  provider      String
-  providerId    String
-  data          Json?
-  userId        String
+  id         String @id @default(cuid())
+  provider   String
+  providerId String
+  data       Json?
+  userId     String
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -172,6 +172,21 @@ model AuditLog {
 model SystemConfig {
   id   Int  @id @default(1)
   data Json
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ClientApiKeyType {
+  Public
+  Admin
+}
+
+model ClientApiKey {
+  id   String           @id @default(cuid())
+  name String
+  key  String           @unique
+  type ClientApiKeyType
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -1,4 +1,4 @@
-import { describeRoute } from "hono-openapi";
+import { DescribeRouteOptions, describeRoute } from "hono-openapi";
 import { resolver } from "hono-openapi/zod";
 import { type Schema, z } from "zod";
 
@@ -23,12 +23,8 @@ export const baseOpenApiResponses = (schema?: Schema) => ({
   },
 });
 
-export const baseDescribeRoute = (
-  { description, tags }: { description?: string; tags?: string[] },
-  schema?: Schema,
-) =>
+export const baseDescribeRoute = (specs: DescribeRouteOptions, schema?: Schema) =>
   describeRoute({
-    description,
-    tags,
+    ...specs,
     responses: baseOpenApiResponses(schema),
   });
