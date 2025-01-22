@@ -59,7 +59,7 @@ List features need to be set up:
 bun run dev
 ```
 
-Thanks to Scalar, Open API/Swagger UI, you can view the API documents at [http://localhost:25000/reference](http://localhost:25000/api/reference) for Scalar and [http://localhost:25000/api/docs](http://localhost:25000/api/docs) for Open API/Swagger UI.
+Thanks to Scalar, Open API/Swagger UI, you can view the API documents at [http://localhost:25000/reference](http://localhost:25000/api/reference) for Scalar UI and [http://localhost:25000/swagger](http://localhost:25000/swagger) for Swagger UI.
 
 > Note: the base path: http://localhost:25000 is set in the `.env` file as `API_URL`
 

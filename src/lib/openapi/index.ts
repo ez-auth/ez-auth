@@ -23,8 +23,12 @@ export const baseOpenApiResponses = (schema?: Schema) => ({
   },
 });
 
-export const baseDescribeRoute = (description: string, schema?: Schema) =>
+export const baseDescribeRoute = (
+  { description, tags }: { description?: string; tags?: string[] },
+  schema?: Schema,
+) =>
   describeRoute({
     description,
+    tags,
     responses: baseOpenApiResponses(schema),
   });

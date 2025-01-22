@@ -27,15 +27,23 @@ import { createPasswordSchema } from "@/utils/zod.util";
 const route = new Hono();
 const config = configService.getConfig();
 
-route.get("/me", baseDescribeRoute("Get current user", userSchema), jwtAuth, async (c) => {
-  const user = c.get("user");
-  const { password, ...userWithoutPassword } = user;
-  return apiResponse(c, { data: userWithoutPassword });
-});
+route.get(
+  "/me",
+  baseDescribeRoute({ description: "Get current user", tags: ["General"] }, userSchema),
+  jwtAuth,
+  async (c) => {
+    const user = c.get("user");
+    const { password, ...userWithoutPassword } = user;
+    return apiResponse(c, { data: userWithoutPassword });
+  },
+);
 
 route.post(
   "/sign-up",
-  baseDescribeRoute("Sign up with credentials"),
+  baseDescribeRoute(
+    { description: "Sign up with credentials", tags: ["General"] },
+    signInWithCredentialsResponseSchema,
+  ),
   validator(
     "json",
     z.strictObject({
@@ -62,7 +70,10 @@ route.post(
 
 route.post(
   "/sign-in",
-  baseDescribeRoute("Sign in with credentials", signInWithCredentialsResponseSchema),
+  baseDescribeRoute(
+    { description: "Sign in with credentials", tags: ["General"] },
+    signInWithCredentialsResponseSchema,
+  ),
   validator(
     "json",
     z.strictObject({
@@ -86,7 +97,10 @@ route.post(
 
 route.get(
   "/confirm-sign-up",
-  baseDescribeRoute("Confirm sign up", confirmSignUpResponseSchema),
+  baseDescribeRoute(
+    { description: "Confirm sign up", tags: ["General"] },
+    confirmSignUpResponseSchema,
+  ),
   validator(
     "query",
     z.strictObject({
@@ -111,7 +125,10 @@ route.get(
 
 route.post(
   "/refresh-token",
-  baseDescribeRoute("Refresh token", refreshTokenResponseSchema),
+  baseDescribeRoute(
+    { description: "Refresh token", tags: ["General"] },
+    refreshTokenResponseSchema,
+  ),
   validator("json", z.strictObject({ refreshToken: z.string() })),
   async (c) => {
     const response = await refreshTokenUsecase.execute({
@@ -124,12 +141,17 @@ route.post(
   },
 );
 
-route.get("/sign-out", baseDescribeRoute("Sign out"), jwtAuth, async (c) => {
-  await revokeSessionUsecase.execute(c.get("user"), {
-    sessionId: c.get("sessionId"),
-  });
+route.get(
+  "/sign-out",
+  baseDescribeRoute({ description: "Sign out", tags: ["General"] }),
+  jwtAuth,
+  async (c) => {
+    await revokeSessionUsecase.execute(c.get("user"), {
+      sessionId: c.get("sessionId"),
+    });
 
-  return apiResponse(c);
-});
+    return apiResponse(c);
+  },
+);
 
 export const rootRoute = route;

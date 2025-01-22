@@ -14,7 +14,7 @@ const config = configService.getConfig();
 
 router.post(
   "/request",
-  baseDescribeRoute("Request password recovery"),
+  baseDescribeRoute({ description: "Request password recovery", tags: ["Password Recovery"] }),
   validator(
     "json",
     z.strictObject({
@@ -31,7 +31,7 @@ router.post(
 
 router.post(
   "/reset",
-  baseDescribeRoute("Reset password"),
+  baseDescribeRoute({ description: "Reset password", tags: ["Password Recovery"] }),
   validator(
     "json",
     z.strictObject({
