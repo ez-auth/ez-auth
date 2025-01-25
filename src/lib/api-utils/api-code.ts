@@ -6,6 +6,7 @@ export enum ApiCode {
   BadRequest = "BadRequest",
   Unauthorized = "Unauthorized",
   Forbidden = "Forbidden",
+  InvalidApiKey = "InvalidApiKey",
 
   EmailExists = "EmailExists",
   PhoneExists = "PhoneExists",

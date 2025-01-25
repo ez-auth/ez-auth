@@ -1,3 +1,4 @@
+import { ClientApiKeyType } from "@prisma/client";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 
@@ -7,9 +8,14 @@ type VariablesType = {
   user: AuthUser;
   sessionId: string;
   isSuperadmin: boolean;
+  clientType: ClientApiKeyType;
 };
 
 export const isSuperadmin = createMiddleware<{ Variables: VariablesType }>(async (c, next) => {
+  if (c.get("clientType") !== ClientApiKeyType.Admin) {
+    throw new HTTPException(403);
+  }
+
   const user = c.get("user");
   if (!user) {
     throw new HTTPException(401);

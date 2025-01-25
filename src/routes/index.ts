@@ -4,6 +4,7 @@ import { Hono } from "hono";
 import { openAPISpecs } from "hono-openapi";
 
 import { configService } from "@/config/config.service";
+import { clientAuth } from "@/lib/middlewares/client-auth.middleware";
 import { isSuperadmin } from "@/lib/middlewares/is-superadmin.middleware";
 import { jwtAuth } from "@/lib/middlewares/jwt.middleware";
 import { changePasswordRoute } from "./change-password.route";
@@ -27,10 +28,11 @@ export const setUpApiDocs = (app: Hono) => {
         servers: [{ url: config.API_URL }],
         components: {
           securitySchemes: {
-            bearerAuth: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
+            clientApiKey: { type: "apiKey", in: "header", name: "X-Api-Key" },
+            httpBearer: { type: "http", scheme: "bearer", bearerFormat: "JWT" },
           },
         },
-        security: [{ bearerAuth: [] }],
+        security: [{ clientApiKey: [], httpBearer: [] }],
       },
     }),
   );
@@ -45,12 +47,15 @@ export const setUpApiDocs = (app: Hono) => {
 export const applyRoutes = (app: Hono) => {
   const config = configService.getConfig();
 
+  app.use("*", clientAuth);
+
   // Client routes
-  app.route("/", rootRoute);
-  app.route("/sessions", sessionRoute);
-  app.route("/password-recovery", passwordRecoveryRoute);
-  app.route("/change-password", changePasswordRoute);
-  app.route("/mfa", mfaSettingsRoute);
+  const publicRoute = new Hono();
+  publicRoute.route("/", rootRoute);
+  publicRoute.route("/sessions", sessionRoute);
+  publicRoute.route("/password-recovery", passwordRecoveryRoute);
+  publicRoute.route("/change-password", changePasswordRoute);
+  publicRoute.route("/mfa", mfaSettingsRoute);
 
   // Superadmin routes
   const superadminRoute = new Hono();
@@ -59,6 +64,8 @@ export const applyRoutes = (app: Hono) => {
   superadminRoute.route("/system-configs", systemConfigRoute);
   superadminRoute.route("/client-api-keys", clientApiKeyRoute);
 
+  // Apply routes
+  app.route("/", publicRoute);
   app.route("/superadmin", superadminRoute);
 
   // OAuth routes

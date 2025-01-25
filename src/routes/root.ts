@@ -43,7 +43,7 @@ route.get(
 route.post(
   "/sign-up",
   baseDescribeRoute(
-    { description: "Sign up with credentials", tags, security: [] },
+    { description: "Sign up with credentials", tags, noBearerAuth: true },
     signInWithCredentialsResponseSchema,
   ),
   validator(
@@ -73,7 +73,7 @@ route.post(
 route.post(
   "/sign-in",
   baseDescribeRoute(
-    { description: "Sign in with credentials", tags, security: [] },
+    { description: "Sign in with credentials", tags, noBearerAuth: true },
     signInWithCredentialsResponseSchema,
   ),
   validator(
@@ -100,7 +100,7 @@ route.post(
 route.get(
   "/confirm-sign-up",
   baseDescribeRoute(
-    { description: "Confirm sign up", tags, security: [] },
+    { description: "Confirm sign up", tags, noBearerAuth: true },
     confirmSignUpResponseSchema,
   ),
   validator(
@@ -128,7 +128,7 @@ route.get(
 route.post(
   "/refresh-token",
   baseDescribeRoute(
-    { description: "Refresh token", tags, security: [] },
+    { description: "Refresh token", tags, noBearerAuth: true },
     refreshTokenResponseSchema,
   ),
   validator("json", z.strictObject({ refreshToken: z.string() })),

@@ -23,8 +23,18 @@ export const baseOpenApiResponses = (schema?: Schema) => ({
   },
 });
 
-export const baseDescribeRoute = (specs: DescribeRouteOptions, schema?: Schema) =>
-  describeRoute({
+export const baseDescribeRoute = (
+  specs: DescribeRouteOptions & { noBearerAuth?: boolean },
+  schema?: Schema,
+) => {
+  const security: any[] = [{ clientApiKey: [] }];
+  if (!specs.noBearerAuth) {
+    security.push({ httpBearer: [] });
+  }
+
+  return describeRoute({
     ...specs,
+    security,
     responses: baseOpenApiResponses(schema),
   });
+};

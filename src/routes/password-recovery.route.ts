@@ -16,7 +16,7 @@ const tags = ["Password Recovery"];
 
 router.post(
   "/request",
-  baseDescribeRoute({ description: "Request password recovery", tags, security: [] }),
+  baseDescribeRoute({ description: "Request password recovery", tags, noBearerAuth: true }),
   validator(
     "json",
     z.strictObject({
@@ -33,7 +33,7 @@ router.post(
 
 router.post(
   "/reset",
-  baseDescribeRoute({ description: "Reset password", tags, security: [] }),
+  baseDescribeRoute({ description: "Reset password", tags, noBearerAuth: true }),
   validator(
     "json",
     z.strictObject({
